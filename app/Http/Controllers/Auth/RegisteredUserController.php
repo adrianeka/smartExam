@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth; // ← tambah ini
 
+use App\Notifications\NewUserRegistered;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -15,24 +16,16 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -40,12 +33,18 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'status' => 'pending',
+            'role' => 'siswa',
         ]);
 
-        event(new Registered($user));
+        event(new Registered($user)); // ← tambah kembali ini
 
-        Auth::login($user);
+        // Kirim notif ke admin
+        $admin = User::where('role', 'admin')->first();
+        if ($admin) {
+            $admin->notify(new NewUserRegistered($user));
+        }
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('register.pending');
     }
 }

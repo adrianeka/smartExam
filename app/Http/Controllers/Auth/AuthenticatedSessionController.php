@@ -11,6 +11,7 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+
     /**
      * Display the login view.
      */
@@ -26,8 +27,19 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        // Cek status user
+        $user = Auth::user();
+        if ($user->status === 'pending') {
+            Auth::logout();
+            return back()->withErrors(['email' => 'Akun kamu masih menunggu persetujuan admin.']);
+        }
 
+        if ($user->status === 'rejected') {
+            Auth::logout();
+            return back()->withErrors(['email' => 'Akun kamu telah ditolak. Hubungi admin.']);
+        }
+
+        $request->session()->regenerate();
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
