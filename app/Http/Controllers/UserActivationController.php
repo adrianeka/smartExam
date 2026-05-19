@@ -19,7 +19,10 @@ class UserActivationController extends Controller
     // Approve user
     public function approve(User $user)
     {
-        $user->update(['status' => 'active']);
+        $user->update([
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
         $user->notify(new AccountApproved());
 
         return back()->with('success', 'Akun ' . $user->name . ' berhasil disetujui.');

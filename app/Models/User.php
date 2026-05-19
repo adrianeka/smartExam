@@ -21,6 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'status',
         'role',
+        'email_verified_at',
     ];
 
     protected $hidden = [
@@ -44,6 +45,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasVerifiedEmail(): bool
     {
         if ($this->role === 'admin') {
+            return true;
+        }
+
+        if ($this->status === 'active') {
             return true;
         }
 
