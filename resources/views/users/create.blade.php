@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Pengguna - Smart Exam</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link class="blueprint" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gray-100 text-gray-700 font-sans">
 
@@ -30,6 +30,7 @@
     </header>
 
     <div class="flex pt-16">
+        
         <aside class="w-64 bg-white border-r border-gray-200 min-h-screen p-4 fixed left-0 h-[calc(100vh-4rem)] overflow-y-auto">
             <div class="mb-6">
                 <p class="text-xs font-bold text-gray-400 uppercase tracking-wider px-3 mb-2">Menu</p>
@@ -75,21 +76,23 @@
             </nav>
 
             <div class="bg-white rounded-xl shadow-xs border border-gray-200 p-8 max-w-5xl">
+                
                 @if(session('success'))
-    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
-        {{ session('success') }}
-    </div>
-@endif
+                    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-@if($errors->any())
-    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
-        <ul class="list-disc pl-5">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                @if($errors->any())
+                    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                        <ul class="list-disc pl-5">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                
                 <h2 class="text-xl font-bold text-gray-800 mb-8">Tambah Pengguna</h2>
 
                 <form action="#" method="POST" enctype="multipart/form-data" class="space-y-6">
@@ -190,17 +193,132 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Kirim Email Ke Pengguna Baru</label>
                         <div class="flex items-center space-x-6">
-                            <label class="flex items-center text-xs text-gray-600"><input type="radio" name="send_email" value="yes" class="mr-2"> Ya</label>
-                            <label class="flex items-center text-xs text-gray-600"><input type="radio" name="send_email" value="no" checked class="mr-2"> Tidak</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="send_email" value="yes" class="mr-2 text-blue-600"> Ya</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="send_email" value="no" checked class="mr-2 text-blue-600"> Tidak</label>
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Akun <span class="text-red-500">*</span></label>
                         <div class="flex items-center space-x-6">
-                            <label class="flex items-center text-xs text-gray-600"><input type="radio" name="status" value="active" class="mr-2"> Aktif</label>
-                            <label class="flex items-center text-xs text-gray-600"><input type="radio" name="status" value="inactive" checked class="mr-2"> Tidak aktif</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="active" class="mr-2 text-blue-600"> Aktif</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="inactive" checked class="mr-2 text-blue-600"> Tidak aktif</label>
                         </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Tanggal Kadaluwarsa</label>
+                        <div class="flex items-center space-x-6 mb-3">
+                            <label class="flex items-center text-xs font-medium text-gray-600 cursor-pointer">
+                                <input type="radio" name="expiry_type" value="never" checked class="mr-2 text-blue-600 focus:ring-blue-500"> Tidak pernah kedaluwarsa
+                            </label>
+                            <label class="flex items-center text-xs font-medium text-gray-600 cursor-pointer">
+                                <input type="radio" name="expiry_type" value="active" class="mr-2 text-blue-600 focus:ring-blue-500"> Aktif
+                            </label>
+                        </div>
+                        <input type="text" name="expiry_date" placeholder="Masukkan tanggal kedaluwarsa" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Legal</label>
+                        <input type="text" name="legal" placeholder="Masukkan informasi legal" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Anda sudah berhasil masuk</label>
+                        <input type="text" name="login_success_msg" placeholder="Masukkan pesan sukses masuk" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Tipe skrip pembaruan</label>
+                        <input type="text" name="update_script_type" placeholder="Masukkan tipe skrip pembaruan" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Tags</label>
+                        <input type="text" name="tags" placeholder="Mulai mengetik, lalu klik batang ini untuk memvalidasi tag" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">RSS</label>
+                        <input type="text" name="rss" placeholder="Masukkan RSS" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Dashboard</label>
+                        <input type="text" name="dashboard" placeholder="Masukkan link dashboard kustom" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Zona Waktu</label>
+                        <div class="relative">
+                            <select name="timezone" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none text-gray-400">
+                                <option value="" disabled selected>Pilih zona waktu...</option>
+                                <option value="Asia/Jakarta">Asia/Jakarta (WIB)</option>
+                                <option value="Asia/Makassar">Asia/Makassar (WITA)</option>
+                                <option value="Asia/Jayapura">Asia/Jayapura (WIT)</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Beri tahu melalui email jika ada undangan baru yang diterima</label>
+                        <div class="relative">
+                            <select name="notify_invitation" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none text-gray-400">
+                                <option value="" disabled selected>Pilih pemberitahuan...</option>
+                                <option value="yes">Ya</option>
+                                <option value="no">Tidak</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Beri tahu melalui email jika ada pesan pribadi baru yang diterima</label>
+                        <div class="relative">
+                            <select name="notify_private_message" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none text-gray-400">
+                                <option value="" disabled selected>Pilih pemberitahuan...</option>
+                                <option value="yes">Ya</option>
+                                <option value="no">Tidak</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Beri tahu melalui email jika ada pesan baru yang diterima di grup</label>
+                        <div class="relative">
+                            <select name="notify_group_message" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none text-gray-400">
+                                <option value="" disabled selected>Pilih pemberitahuan...</option>
+                                <option value="yes">Ya</option>
+                                <option value="no">Tidak</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Status Obrolan Pengguna</label>
+                        <input type="text" name="chat_status" placeholder="Masukkan status obrolan pengguna" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">URL Google Calendar</label>
+                        <input type="text" name="google_calendar_url" placeholder="Masukkan url google calendar" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Akun terkunci sampai</label>
+                        <input type="text" name="locked_until" placeholder="Masukkan masa penguncian akun" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
