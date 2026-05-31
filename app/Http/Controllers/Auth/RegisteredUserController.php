@@ -37,8 +37,6 @@ class RegisteredUserController extends Controller
             'role' => 'siswa',
         ]);
 
-        event(new Registered($user)); // ← tambah kembali ini
-
         // Kirim notif ke admin
         $admin = User::where('role', 'admin')->first();
         if ($admin) {
