@@ -101,11 +101,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-2">Nama Depan <span class="text-red-500">*</span></label>
-                            <input type="text" name="first_name" placeholder="Masukkan nama depan" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                            <input type="text" name="first_name" dusk="first_name" placeholder="Masukkan nama depan" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-2">Nama Belakang <span class="text-red-500">*</span></label>
-                            <input type="text" name="last_name" placeholder="Masukkan nama belakang" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                            <input type="text" name="last_name" dusk="last_name" placeholder="Masukkan nama belakang" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
                         </div>
                     </div>
 
@@ -117,7 +117,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-2">Email <span class="text-red-500">*</span></label>
-                            <input type="email" name="email" placeholder="Masukkan email" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                            <input type="email" name="email" dusk="email" placeholder="Masukkan email" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-2">Nomor Telepon</label>
@@ -139,7 +139,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Nama Pengguna <span class="text-red-500">*</span></label>
-                        <input type="text" name="username" placeholder="Masukkan nama pengguna" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                        <input type="text" name="username" dusk="username" placeholder="Masukkan nama pengguna" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
                     </div>
 
                     <div>
@@ -152,7 +152,7 @@
                                 <input type="radio" name="password_type" value="manual" checked class="mr-2 text-blue-600 focus:ring-blue-500"> Masukkan kata sandi
                             </label>
                         </div>
-                        <input type="password" name="password" placeholder="Masukkan kata sandi" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                        <input type="password" name="password" dusk="password" placeholder="Masukkan kata sandi" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
                         
                         <div class="mt-3 space-y-1 text-xs">
                             <p class="text-emerald-600 flex items-center"><i class="fa-solid fa-circle-check mr-1.5 text-[10px]"></i> Minimal 5 karakter secara keseluruhan</p>
@@ -201,8 +201,8 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Akun <span class="text-red-500">*</span></label>
                         <div class="flex items-center space-x-6">
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="active" class="mr-2 text-blue-600"> Aktif</label>
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="inactive" checked class="mr-2 text-blue-600"> Tidak aktif</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="active" checked class="mr-2 text-blue-600"> Aktif</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="inactive" class="mr-2 text-blue-600"> Tidak aktif</label>
                         </div>
                     </div>
 
