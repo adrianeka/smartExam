@@ -1,71 +1,11 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Pengguna - Smart Exam</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link class="blueprint" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+<x-app-layout>
 <body class="bg-gray-100 text-gray-700 font-sans">
 
-    <header class="bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center fixed w-full top-0 z-50">
-        <div class="flex items-center space-x-2">
-            <div class="bg-blue-600 text-white p-2 rounded font-bold text-xs tracking-wider">SMART EXAM</div>
-        </div>
-        <div class="flex items-center space-x-6">
-            <div class="relative">
-                <i class="fa-regular fa-bell text-gray-500 text-xl"></i>
-                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1 rounded-full font-bold">99+</span>
-            </div>
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-full bg-gray-300"></div>
-                <div class="text-left">
-                    <p class="text-sm font-semibold text-gray-800">User Name</p>
-                    <p class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded text-center font-medium">Admin</p>
-                </div>
-                <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
-            </div>
-        </div>
-    </header>
 
-    <div class="flex pt-16">
-        
-        <aside class="w-64 bg-white border-r border-gray-200 min-h-screen p-4 fixed left-0 h-[calc(100vh-4rem)] overflow-y-auto">
-            <div class="mb-6">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider px-3 mb-2">Menu</p>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mt-4 mb-2">Pembelajaran</p>
-                <nav class="space-y-1">
-                    <a href="#" class="flex justify-between items-center px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
-                        <span class="flex items-center"><i class="fa-solid fa-book w-5 text-gray-400"></i> Mata Kuliah Saya</span>
-                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                    </a>
-                    <a href="#" class="flex justify-between items-center px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
-                        <span class="flex items-center"><i class="fa-regular fa-calendar w-5 text-gray-400"></i> Aktivitas Pembelajaran</span>
-                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                    </a>
-                </nav>
 
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mt-6 mb-2">Administrasi Platform</p>
-                <nav class="space-y-1">
-                    <div>
-                        <button class="w-full flex justify-between items-center px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50/50 rounded">
-                            <span class="flex items-center"><i class="fa-solid fa-users w-5 text-blue-500"></i> Manajemen Pengguna</span>
-                            <i class="fa-solid fa-chevron-up text-[10px]"></i>
-                        </button>
-                        <div class="pl-8 pr-3 py-1 space-y-1 mt-1 border-l-2 border-blue-500 ml-5">
-                            <a href="#" class="block py-1.5 text-sm text-blue-600 font-medium">Daftar Pengguna</a>
-                            <a href="#" class="block py-1.5 text-sm text-gray-500 hover:text-gray-800">Impor Pengguna (XML/CSV)</a>
-                            <a href="#" class="block py-1.5 text-sm text-gray-500 hover:text-gray-800">Ekspor Pengguna</a>
-                            <a href="#" class="block py-1.5 text-sm text-gray-500 hover:text-gray-800">Profiling</a>
-                            <a href="#" class="block py-1.5 text-sm text-gray-500 hover:text-gray-800">Kelas</a>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </aside>
+    <div class="">
 
-        <main class="flex-1 ml-64 p-8">
+        <main class="flex-1 ">
             <nav class="text-xs text-gray-500 flex items-center space-x-2 mb-6">
                 <i class="fa-solid fa-house"></i>
                 <span>Administrasi Platform</span>
@@ -95,7 +35,7 @@
                 
                 <h2 class="text-xl font-bold text-gray-800 mb-8">Tambah Pengguna</h2>
 
-                <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ route('admin.user.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -356,4 +296,4 @@
     </div>
 
 </body>
-</html>
+</x-app-layout>
