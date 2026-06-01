@@ -61,7 +61,7 @@
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
                  class="submenu ml-4 pl-4 border-l-2 border-blue-500 mt-1 mb-1 space-y-0.5 label-text">
-                <a href="#" class="block py-2 px-2 text-sm text-blue-600 font-medium rounded hover:bg-blue-50 transition">Daftar Pengguna</a>
+                <a href="{{ route('admin.users.index') }}" class="block py-2 px-2 text-sm text-blue-600 font-medium rounded hover:bg-blue-50 transition">Daftar Pengguna</a>
                 <a href="#" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Impor Pengguna (XML/CSV)</a>
                 <a href="#" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Ekspor Pengguna</a>
                 <a href="#" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Profiling</a>
