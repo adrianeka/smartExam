@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserActivationController;
 use App\Http\Controllers\UserController;
+use Spatie\Permission\Models\Role;
+use App\Http\Middleware\RoleRedirectMiddleware;
 
 Route::get('/', function () {
     return redirect('login');
@@ -26,7 +28,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserActivationController::class, 'index'])->name('users.index');
         Route::post('/users/{user}/approve', [UserActivationController::class, 'approve'])->name('users.approve');
         Route::post('/users/{user}/reject', [UserActivationController::class, 'reject'])->name('users.reject');
