@@ -27,8 +27,8 @@ class RegisterPageTest extends DuskTestCase
                     ->type('@password', 'Pass12!')
  
                     // Select the "Aktif" (active) radio button for account status
-                    ->radio('status', 'active')
-                    ->assertRadioSelected('status', 'active')
+                    ->radio('status-true', 'active')
+                    ->assertRadioSelected('status-true', 'active')
  
                     // Submit form
                     ->press('Simpan')
@@ -46,7 +46,7 @@ class RegisterPageTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('/admin/tambah-pengguna')
                     ->press('Simpan')
-                    ->assertSee('Tambah Pengguna'); // stays on same page due to validation
+                    ->assertSee('The password field'); 
         });
     }
  
@@ -63,7 +63,7 @@ class RegisterPageTest extends DuskTestCase
                     ->type('@username', 'budisantoso')
                     ->type('@email', 'budi@example.com')
                     ->type('@password', 'ab1') // too short, no special char
-                    ->radio('status', 'active')
+                    ->radio('status-true', 'active')
                     ->press('Simpan')
                     ->assertSee('Tambah Pengguna'); // should stay on page
         });
@@ -81,7 +81,7 @@ class RegisterPageTest extends DuskTestCase
                     ->type('@username', 'budisantoso')
                     ->type('@email', 'budi@example.com')
                     ->type('@password', 'Abcde!') // no digits
-                    ->radio('status', 'active')
+                    ->radio('status-true', 'active')
                     ->press('Simpan')
                     ->assertSee('Tambah Pengguna');
         });
@@ -99,7 +99,7 @@ class RegisterPageTest extends DuskTestCase
                     ->type('@username', 'budisantoso')
                     ->type('@email', 'budi@example.com')
                     ->type('@password', 'Abcd1!') // only 1 digit
-                    ->radio('status', 'active')
+                    ->radio('status-true', 'active')
                     ->press('Simpan')
                     ->assertSee('Tambah Pengguna');
         });
@@ -117,7 +117,7 @@ class RegisterPageTest extends DuskTestCase
                     ->type('@username', 'budisantoso')
                     ->type('@email', 'budi@example.com')
                     ->type('@password', 'Abcd12') // no special char
-                    ->radio('status', 'active')
+                    ->radio('status-true', 'active')
                     ->press('Simpan')
                     ->assertSee('Tambah Pengguna');
         });
@@ -135,7 +135,7 @@ class RegisterPageTest extends DuskTestCase
                     ->type('@username', 'budisantoso')
                     ->type('@email', 'budi@example.com')
                     ->type('@password', 'Abc12!') // 6 chars, 2 digits, 1 special
-                    ->radio('status', 'active')
+                    ->radio('status-true', 'active')
                     ->press('Simpan')
                     ->assertSee('berhasil');
         });
@@ -150,15 +150,15 @@ class RegisterPageTest extends DuskTestCase
     //         $browser->visit('/users/create')
  
     //                 // "Aktif" should be pre-selected (checked attribute in the blade)
-    //                 ->assertRadioSelected('status', 'active')
+    //                 ->assertRadioSelected('status-true', 'active')
  
     //                 // Switch to "Tidak aktif"
-    //                 ->radio('status', 'inactive')
-    //                 ->assertRadioSelected('status', 'inactive')
+    //                 ->radio('status-true', 'inactive')
+    //                 ->assertRadioSelected('status-true', 'inactive')
  
     //                 // Switch back to "Aktif"
-    //                 ->radio('status', 'active')
-    //                 ->assertRadioSelected('status', 'active');
+    //                 ->radio('status-true', 'active')
+    //                 ->assertRadioSelected('status-true', 'active');
     //     });
     // }
  
@@ -168,13 +168,13 @@ class RegisterPageTest extends DuskTestCase
     public function test_save_and_add_more_button_works(): void
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit('/users/create')
+            $browser->visit('/admin/tambah-pengguna')
                     ->type('@first_name', 'Sari')
                     ->type('@last_name', 'Dewi')
                     ->type('@username', 'saridewi')
                     ->type('@email', 'sari.dewi@example.com')
                     ->type('@password', 'Pass12!')
-                    ->radio('status', 'active')
+                    ->radio('status-true', 'active')
                     ->press('Simpan dan Tambah Baru')
                     ->assertSee('Tambah Pengguna'); // should reload the create form
         });

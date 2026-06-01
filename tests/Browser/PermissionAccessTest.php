@@ -93,7 +93,7 @@ class PermissionAccessTest extends DuskTestCase
     // =========================================================================
 
     /** @test */
-    public function admin_dapat_mengakses_dashboard_admin(): void
+    public function test_admin_dapat_mengakses_dashboard_admin(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->adminUser)
@@ -106,7 +106,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function admin_dapat_mengakses_halaman_manajemen_user(): void
+    public function test_admin_dapat_mengakses_halaman_manajemen_user(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->adminUser)
@@ -118,7 +118,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function admin_dapat_mengakses_halaman_manajemen_role(): void
+    public function test_admin_dapat_mengakses_halaman_manajemen_role(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->adminUser)
@@ -130,7 +130,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function admin_dapat_mengakses_laporan(): void
+    public function test_admin_dapat_mengakses_laporan(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->adminUser)
@@ -142,7 +142,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function admin_dapat_mengakses_pengaturan_sistem(): void
+    public function test_admin_dapat_mengakses_pengaturan_sistem(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->adminUser)
@@ -154,7 +154,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function admin_dapat_mengakses_manajemen_kursus(): void
+    public function test_admin_dapat_mengakses_manajemen_kursus(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->adminUser)
@@ -169,7 +169,7 @@ class PermissionAccessTest extends DuskTestCase
     // =========================================================================
 
     /** @test */
-    public function teacher_dapat_mengakses_dashboard_teacher(): void
+    public function test_teacher_dapat_mengakses_dashboard_teacher(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -181,7 +181,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function teacher_dapat_mengakses_halaman_kursus(): void
+    public function test_teacher_dapat_mengakses_halaman_kursus(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -193,7 +193,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function teacher_dapat_mengakses_halaman_tugas(): void
+    public function test_teacher_dapat_mengakses_halaman_tugas(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -205,7 +205,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function teacher_dapat_mengakses_daftar_siswa(): void
+    public function test_teacher_dapat_mengakses_daftar_siswa(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -217,7 +217,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function teacher_dapat_mengakses_halaman_penilaian(): void
+    public function test_teacher_dapat_mengakses_halaman_penilaian(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -228,7 +228,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function teacher_tidak_dapat_mengakses_manajemen_user(): void
+    public function test_teacher_tidak_dapat_mengakses_manajemen_user(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -244,7 +244,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function teacher_tidak_dapat_mengakses_pengaturan_sistem(): void
+    public function test_teacher_tidak_dapat_mengakses_pengaturan_sistem(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -254,7 +254,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function teacher_tidak_dapat_mengakses_manajemen_role(): void
+    public function test_teacher_tidak_dapat_mengakses_manajemen_role(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -268,7 +268,7 @@ class PermissionAccessTest extends DuskTestCase
     // =========================================================================
 
     /** @test */
-    public function student_dapat_mengakses_dashboard_student(): void
+    public function test_student_dapat_mengakses_dashboard_student(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -280,7 +280,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_dapat_melihat_daftar_kursus(): void
+    public function test_student_dapat_melihat_daftar_kursus(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -292,7 +292,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_dapat_mengakses_halaman_nilai(): void
+    public function test_student_dapat_mengakses_halaman_nilai(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -304,7 +304,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_dapat_mengakses_profil(): void
+    public function test_student_dapat_mengakses_profil(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -315,7 +315,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_dapat_melihat_dan_mengumpulkan_tugas(): void
+    public function test_student_dapat_melihat_dan_mengumpulkan_tugas(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -327,7 +327,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_tidak_dapat_mengakses_panel_admin(): void
+    public function test_student_tidak_dapat_mengakses_panel_admin(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -338,7 +338,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_tidak_dapat_mengakses_manajemen_kursus(): void
+    public function test_student_tidak_dapat_mengakses_manajemen_kursus(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -348,7 +348,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_tidak_dapat_menilai_siswa_lain(): void
+    public function test_student_tidak_dapat_menilai_siswa_lain(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -358,7 +358,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_tidak_dapat_mengakses_daftar_semua_user(): void
+    public function test_student_tidak_dapat_mengakses_daftar_semua_user(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
@@ -372,7 +372,7 @@ class PermissionAccessTest extends DuskTestCase
     // =========================================================================
 
     /** @test */
-    public function guest_diarahkan_ke_halaman_login_saat_akses_dashboard(): void
+    public function test_guest_diarahkan_ke_halaman_login_saat_akses_dashboard(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/admin/dashboard')
@@ -383,7 +383,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function guest_diarahkan_ke_login_saat_akses_kursus(): void
+    public function test_guest_diarahkan_ke_login_saat_akses_kursus(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/courses')
@@ -392,7 +392,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function guest_diarahkan_ke_login_saat_akses_profil(): void
+    public function test_guest_diarahkan_ke_login_saat_akses_profil(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/profile')
@@ -405,7 +405,7 @@ class PermissionAccessTest extends DuskTestCase
     // =========================================================================
 
     /** @test */
-    public function admin_melihat_menu_navigasi_lengkap(): void
+    public function test_admin_melihat_menu_navigasi_lengkap(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->adminUser)
@@ -418,7 +418,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function teacher_melihat_menu_navigasi_teacher(): void
+    public function test_teacher_melihat_menu_navigasi_teacher(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->teacherUser)
@@ -432,7 +432,7 @@ class PermissionAccessTest extends DuskTestCase
     }
 
     /** @test */
-    public function student_melihat_menu_navigasi_terbatas(): void
+    public function test_student_melihat_menu_navigasi_terbatas(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->studentUser)
