@@ -31,27 +31,47 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $rules = [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            // 'username' => 'required|string|unique:users,username',
-            'password' => 'required|min:5',
             'role' => 'required|in:admin,teacher,student',
-        ]);
+            'status' => 'required|in:active,rejected',
+            'image' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:102400', // max 100MB
+        ];
+
+        if ($request->password_type === 'manual') {
+            $rules['password'] = 'required|min:5';
+        }
+
+        $request->validate($rules);
 
         $fullName = $request->first_name . ' ' . $request->last_name;
+        $password = $request->password_type === 'auto' ? \Illuminate\Support\Str::random(8) : $request->password;
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('user_documents', 'public');
+        }
 
         $user = User::create([
             'name' => $fullName,
             'email' => $request->email,
-            // 'username' => $request->username,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($password),
+            'role' => $request->role,
+            'status' => $request->status,
+            'image' => $imagePath,
         ]);
 
         $user->assignRole($request->role);
 
-        return redirect()->back()->with('success', 'Pengguna berhasil ditambahkan dengan role ' . $request->role);
+        $message = 'Pengguna berhasil ditambahkan dengan role ' . ucfirst($request->role);
+
+        if ($request->action === 'save_and_add_more') {
+            return redirect()->route('admin.user.create')->with('success', $message);
+        }
+
+        return redirect()->route('admin.users.index')->with('success', $message);
     }
 
     // public function edit(User $user)

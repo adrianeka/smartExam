@@ -10,9 +10,57 @@ use Illuminate\Http\Request;
 class UserActivationController extends Controller
 {
     // Halaman list user pending (untuk admin)
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('status', 'pending')->get();
+        $query = User::with('roles')->latest();
+
+        // Main search
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Advanced Search
+        if ($firstName = $request->input('first_name')) {
+            $query->where('name', 'like', "{$firstName}%");
+        }
+        if ($lastName = $request->input('last_name')) {
+            $query->where('name', 'like', "%{$lastName}");
+        }
+        if ($email = $request->input('email')) {
+            $query->where('email', 'like', "%{$email}%");
+        }
+        if ($userId = $request->input('user_id')) {
+            $query->where('id', $userId);
+        }
+
+        // Role filtering
+        if ($role = $request->input('role')) {
+            if ($role !== 'Semua') {
+                $roleName = strtolower($role);
+                if ($roleName === 'mahasiswa') $roleName = 'student';
+                if ($roleName === 'dosen') $roleName = 'teacher';
+                
+                $query->whereHas('roles', function($q) use ($roleName) {
+                    $q->where('name', $roleName);
+                });
+            }
+        }
+
+        // Status filtering
+        if ($status = $request->input('status')) {
+            if ($status === 'Aktif') {
+                $query->where('status', 'active');
+            } elseif ($status === 'Nonaktif') {
+                $query->where('status', 'rejected');
+            }
+        }
+
+        $limit = $request->input('limit', 10);
+        $users = $query->paginate($limit)->withQueryString();
+
         return view('admin.users.index', compact('users'));
     }
 

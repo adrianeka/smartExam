@@ -30,15 +30,31 @@
             color: #dc2626;
         }
 
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
         .checkbox-custom {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            min-height: 18px;
             border-radius: 4px;
             border: 1.5px solid #d1d5db;
             background: #fff;
+            -webkit-appearance: none;
+            -moz-appearance: none;
             appearance: none;
             cursor: pointer;
             transition: border-color .15s, background .15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            margin: 0;
+            padding: 0;
+            flex-shrink: 0;
         }
 
         .checkbox-custom:checked {
@@ -49,12 +65,26 @@
         .checkbox-custom:checked::after {
             content: '';
             display: block;
-            width: 4px;
-            height: 8px;
+            width: 5px;
+            height: 9px;
             border: 2px solid #fff;
             border-top: none;
             border-left: none;
-            transform: rotate(45deg) translate(2px, -1px);
+            transform: rotate(45deg);
+            margin-top: -2px;
+        }
+
+        /* Force hide native select arrow to prevent double-chevron */
+        select.appearance-none,
+        select.select-no-arrow {
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+            background-image: none !important;
+        }
+        select.appearance-none::-ms-expand,
+        select.select-no-arrow::-ms-expand {
+            display: none;
         }
 
         tr:hover td {
@@ -75,6 +105,7 @@
 
 
     <!-- Search & Filters -->
+    <form method="GET" action="{{ route('admin.users.index') }}" id="filterForm">
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 mb-6">
         <!-- Header -->
         <div class="flex items-start justify-between mb-6">
@@ -86,13 +117,13 @@
                     Vitae at tellus nunc non viverra placerat pulvinar amet massa.
                 </p>
             </div>
-            <button
+            <a href="{{ route('admin.user.create') }}"
                 class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 Tambah Pengguna
-            </button>
+            </a>
         </div>
         <p class="text-sm font-semibold text-gray-700 mb-3">Telusuri</p>
         <!-- Main Search -->
@@ -103,10 +134,10 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z" />
                 </svg>
-                <input type="text" placeholder="Masukkan nama atau email pengguna"
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Masukkan nama atau email pengguna"
                     class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 placeholder-gray-400" />
             </div>
-            <button class="p-2.5 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+            <button type="submit" class="p-2.5 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
@@ -120,35 +151,35 @@
             <div class="grid grid-cols-3 gap-4 mb-4">
                 <div>
                     <label class="text-xs text-gray-600 font-medium mb-1 block">Nama Depan</label>
-                    <input type="text" placeholder="Masukkan nama depan pengguna"
+                    <input type="text" name="first_name" value="{{ request('first_name') }}" placeholder="Masukkan nama depan pengguna"
                         class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400" />
                 </div>
                 <div>
                     <label class="text-xs text-gray-600 font-medium mb-1 block">Nama Belakang</label>
-                    <input type="text" placeholder="Masukkan nama belakang pengguna"
+                    <input type="text" name="last_name" value="{{ request('last_name') }}" placeholder="Masukkan nama belakang pengguna"
                         class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400" />
                 </div>
                 <div>
                     <label class="text-xs text-gray-600 font-medium mb-1 block">Nama Terdaftar</label>
-                    <input type="text" placeholder="Masukkan terdaftar pengguna"
+                    <input type="text" name="username" value="{{ request('username') }}" placeholder="Masukkan terdaftar pengguna"
                         class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400" />
                 </div>
                 <div>
                     <label class="text-xs text-gray-600 font-medium mb-1 block">Email</label>
-                    <input type="text" placeholder="Masukkan email pengguna"
+                    <input type="text" name="email" value="{{ request('email') }}" placeholder="Masukkan email pengguna"
                         class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400" />
                 </div>
                 <div>
                     <label class="text-xs text-gray-600 font-medium mb-1 block">Kode Pengguna</label>
-                    <input type="text" placeholder="Masukkan kode pengguna"
+                    <input type="text" name="user_id" value="{{ request('user_id') }}" placeholder="Masukkan kode pengguna"
                         class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400" />
                 </div>
                 <div>
                     <label class="text-xs text-gray-600 font-medium mb-1 block">Grup/Kelas</label>
                     <div class="relative">
-                        <select
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-400 appearance-none bg-white">
-                            <option value="">Masukkan grup/kelas pengguna</option>
+                        <select name="group"
+                            class="select-no-arrow w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 bg-white">
+                            <option value="" class="text-gray-400">Masukkan grup/kelas pengguna</option>
                         </select>
                         <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,11 +193,11 @@
                 <div>
                     <label class="text-xs text-gray-600 font-medium mb-1 block">Profil</label>
                     <div class="relative">
-                        <select
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 appearance-none bg-white">
-                            <option>Semua</option>
-                            <option>Mahasiswa</option>
-                            <option>Dosen</option>
+                        <select name="role"
+                            class="select-no-arrow w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 bg-white">
+                            <option value="Semua" {{ request('role') == 'Semua' ? 'selected' : '' }}>Semua</option>
+                            <option value="Mahasiswa" {{ request('role') == 'Mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                            <option value="Dosen" {{ request('role') == 'Dosen' ? 'selected' : '' }}>Dosen</option>
                         </select>
                         <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,11 +209,11 @@
                     <label class="text-xs text-gray-600 font-medium mb-1 block">Status Akun</label>
                     <div class="flex gap-4 mt-2">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="status" class="accent-blue-500" /> <span
+                            <input type="radio" name="status" value="Aktif" {{ request('status') == 'Aktif' ? 'checked' : '' }} class="accent-blue-500" /> <span
                                 class="text-sm text-gray-600">Aktif</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="status" class="accent-blue-500" /> <span
+                            <input type="radio" name="status" value="Nonaktif" {{ request('status') == 'Nonaktif' ? 'checked' : '' }} class="accent-blue-500" /> <span
                                 class="text-sm text-gray-600">Nonaktif</span>
                         </label>
                     </div>
@@ -191,19 +222,19 @@
 
             <div class="flex items-center justify-between">
                 <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" class="checkbox-custom" />
+                    <input type="checkbox" name="weak_password" value="1" {{ request('weak_password') ? 'checked' : '' }} class="checkbox-custom" />
                     <span class="text-sm text-gray-600">Cari kata sandi yang lemah</span>
                 </label>
                 <div class="flex items-center gap-3">
-                    <button
+                    <a href="{{ route('admin.users.index') }}"
                         class="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
                         Atur Ulang
-                    </button>
-                    <button
+                    </a>
+                    <button type="submit"
                         class="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -222,12 +253,18 @@
             <span class="text-sm font-semibold text-gray-700">List</span>
             <div class="flex items-center gap-2">
                 <span class="text-sm text-gray-500">Tampilkan</span>
-                <select
-                    class="border border-gray-200 rounded-lg text-sm px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option>10 Data</option>
-                    <option>25 Data</option>
-                    <option>50 Data</option>
-                </select>
+                <div class="relative">
+                    <select name="limit" onchange="document.getElementById('filterForm').submit()"
+                        class="select-no-arrow border border-gray-200 rounded-lg text-sm pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 bg-white">
+                        <option value="10" {{ request('limit') == 10 ? 'selected' : '' }}>10 Data</option>
+                        <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25 Data</option>
+                        <option value="50" {{ request('limit') == 50 ? 'selected' : '' }}>50 Data</option>
+                    </select>
+                    <svg class="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -292,18 +329,80 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
+                <tbody>
+                    @php
+                        $avatarColors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'];
+                    @endphp
+                    @forelse($users as $index => $user)
+                        @php
+                            $initials = collect(explode(' ', $user->name))->take(2)->map(fn($w) => strtoupper(mb_substr($w, 0, 1)))->join('');
+                            $color = $avatarColors[$index % count($avatarColors)];
+                            $statusClass = match($user->status) {
+                                'active' => 'status-aktif',
+                                'rejected' => 'status-nonaktif',
+                                default => 'status-pending',
+                            };
+                            $statusLabel = match($user->status) {
+                                'active' => 'Aktif',
+                                'rejected' => 'Nonaktif',
+                                default => 'Pending',
+                            };
+                            $roleName = $user->roles->first()?->name ?? $user->role ?? '-';
+                        @endphp
+                        <tr class="border-b border-gray-50 transition-colors">
+                            <td class="px-4 py-3"><input type="checkbox" class="checkbox-custom" /></td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                                        style="background:{{ $color }}">{{ $initials }}</div>
+                                    <div>
+                                        <p class="font-semibold text-gray-800 text-sm">{{ $user->name }}</p>
+                                        <p class="text-xs text-gray-400">{{ $user->id }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">{{ $statusLabel }}</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">{{ ucfirst($roleName) }}</td>
+                            <td class="px-4 py-3 text-sm text-blue-500 hover:underline cursor-pointer">{{ $user->email }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-600">{{ $user->created_at?->format('d M Y, H:i') ?? '-' }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-600">{{ $user->updated_at?->format('d M Y, H:i') ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                <button class="action-btn p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" data-user-id="{{ $user->id }}" title="Aksi lainnya">
+                                    <svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="5" r="1.5"/>
+                                        <circle cx="12" cy="12" r="1.5"/>
+                                        <circle cx="12" cy="19" r="1.5"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-4 py-12 text-center text-gray-400 text-sm">
+                                <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                Belum ada pengguna terdaftar.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
+        <div class="px-5 py-4 border-t border-gray-100">
+            {{ $users->links() }}
+        </div>
     </div>
+    </form>
 
     <!-- Dropdown Action Card -->
     <div id="actionDropdown"
         class="hidden fixed z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 w-56 py-2 dropdown-menu">
         <div class="px-2">
             <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-700 hover:text-blue-700 transition-colors text-sm">
+                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -311,7 +410,7 @@
                 Daftar Mata Kuliah
             </button>
             <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-700 hover:text-blue-700 transition-colors text-sm">
+                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
@@ -321,7 +420,7 @@
                 Sesi Mata Kuliah
             </button>
             <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-700 hover:text-blue-700 transition-colors text-sm">
+                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -329,15 +428,15 @@
                 Masuk Sebagai
             </button>
             <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-700 hover:text-blue-700 transition-colors text-sm">
+                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Laporan Aktivitas
             </button>
-            <a  href="{{ route('admin.user.create') }}"
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-700 hover:text-blue-700 transition-colors text-sm">
+            <a id="dropdownEditLink" href="#"
+                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -345,7 +444,7 @@
                 Ubah Profil
             </a>
             <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-700 hover:text-blue-700 transition-colors text-sm">
+                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -353,7 +452,7 @@
                 Tambah Keahlian
             </button>
             <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-700 hover:text-blue-700 transition-colors text-sm">
+                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -361,7 +460,7 @@
                 Jadwal Kalender
             </button>
             <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-700 hover:text-blue-700 transition-colors text-sm">
+                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
@@ -383,98 +482,98 @@
 
 
     <!-- Overlay -->
-    <div id="overlay" class="hidden fixed inset-0 z-40" onclick="closeDropdown()"></div>
+    <div id="overlay" class="hidden fixed inset-0 z-40"></div>
 
     <script>
-        const users = [
-            { name: 'Kevin Ardian', id: '7341984', status: 'Nonaktif', profil: 'Mahasiswa', email: 'usernam e...', reg: '28 April 2022, 16:00', login: '28 April 2022, 16:00' },
-            { name: 'Pricilla Mar...', id: '7341984', status: 'Aktif', profil: 'Mahasiswa', email: 'usernam e...', reg: '28 April 2022, 16:00', login: '28 April 2022, 16:00' },
-            { name: 'Kevin Ardian', id: '7341984', status: 'Nonaktif', profil: 'Dosen', email: 'usernam e...', reg: '28 April 2022, 16:00', login: '28 April 2022, 16:00' },
-            { name: 'Pricilla Mar...', id: '7341984', status: 'Aktif', profil: 'Mahasiswa', email: 'usernam e...', reg: '28 April 2022, 16:00', login: '28 April 2022, 16:00' },
-            { name: 'Kevin Ardian', id: '7341984', status: 'Nonaktif', profil: 'Mahasiswa', email: 'usernam e...', reg: '28 April 2022, 16:00', login: '28 April 2022, 16:00' },
-            { name: 'Kevin Ardian', id: '7341984', status: 'Nonaktif', profil: 'Dosen', email: 'usernam e...', reg: '28 April 2022, 16:00', login: '28 April 2022, 16:00' },
-        ];
-
-        const avatarColors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'];
-
-        function getInitials(name) {
-            return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
-        }
-
-        const tbody = document.getElementById('tableBody');
-        users.forEach((u, i) => {
-            const isAktif = u.status === 'Aktif';
-            const color = avatarColors[i % avatarColors.length];
-            const row = document.createElement('tr');
-            row.className = 'border-b border-gray-50 transition-colors';
-            row.innerHTML = `
-    <td class="px-4 py-3"><input type="checkbox" class="checkbox-custom"/></td>
-    <td class="px-4 py-3">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style="background:${color}">${getInitials(u.name)}</div>
-        <div>
-          <p class="font-semibold text-gray-800 text-sm">${u.name}</p>
-          <p class="text-xs text-gray-400">${u.id}</p>
-        </div>
-      </div>
-    </td>
-    <td class="px-4 py-3">
-      <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${isAktif ? 'status-aktif' : 'status-nonaktif'}">${u.status}</span>
-    </td>
-    <td class="px-4 py-3 text-sm text-gray-600">${u.profil}</td>
-    <td class="px-4 py-3 text-sm text-blue-500 hover:underline cursor-pointer">${u.email}</td>
-    <td class="px-4 py-3 text-sm text-gray-600">${u.reg}</td>
-    <td class="px-4 py-3 text-sm text-gray-600">${u.login}</td>
-    <td class="px-4 py-3">
-      <div class="flex items-center gap-2">
-        <button class="p-1.5 rounded-lg hover:bg-blue-50 text-blue-400 hover:text-blue-600 transition-colors" title="Lihat">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-        </button>
-        <button class="action-btn p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" data-index="${i}" title="Aksi">
-          <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-        </button>
-      </div>
-    </td>
-  `;
-            tbody.appendChild(row);
-        });
-
         const dropdown = document.getElementById('actionDropdown');
         const overlay = document.getElementById('overlay');
         let activeBtn = null;
 
-        document.addEventListener('click', e => {
-            const btn = e.target.closest('.action-btn');
-            if (!btn) return;
-            e.stopPropagation();
-            if (activeBtn === btn && !dropdown.classList.contains('hidden')) {
-                closeDropdown(); return;
-            }
+        function openDropdown(btn) {
             activeBtn = btn;
-            const rect = btn.getBoundingClientRect();
-            const ddW = 224, ddH = 400;
-            let top = rect.bottom + window.scrollY + 4;
-            let left = rect.right + window.scrollX - ddW;
-            if (left < 8) left = 8;
-            if (top + ddH > window.innerHeight + window.scrollY) {
-                top = rect.top + window.scrollY - ddH - 4;
+            const userId = btn.dataset.userId;
+
+            // Update the edit link with the correct user id
+            // Since there's no edit route yet, we keep it as '#' for now
+            const editLink = document.getElementById('dropdownEditLink');
+            if (editLink) {
+                editLink.href = '#'; // Will be: /admin/users/{id}/edit when route exists
             }
+
+            const rect = btn.getBoundingClientRect();
+            const ddW = 224;
+
+            // Position below the button, aligned to the right edge
+            let top = rect.bottom + 4;
+            let left = rect.right - ddW;
+
+            // Keep within viewport horizontally
+            if (left < 8) left = 8;
+            if (left + ddW > window.innerWidth - 8) left = window.innerWidth - ddW - 8;
+
+            // If not enough space below, show above the button
+            dropdown.classList.remove('hidden');
+            const ddH = dropdown.offsetHeight;
+
+            if (top + ddH > window.innerHeight - 8) {
+                top = rect.top - ddH - 4;
+            }
+
+            // If still out of viewport (above), force to top
+            if (top < 8) top = 8;
+
+            dropdown.style.position = 'fixed';
             dropdown.style.top = top + 'px';
             dropdown.style.left = left + 'px';
-            dropdown.classList.remove('hidden');
             overlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            // re-trigger animation
+
+            // Re-trigger animation
             dropdown.classList.remove('dropdown-menu');
             void dropdown.offsetWidth;
             dropdown.classList.add('dropdown-menu');
-        });
+        }
 
         function closeDropdown() {
             dropdown.classList.add('hidden');
+            overlay.classList.remove('dropdown-menu');
             overlay.classList.add('hidden');
-            document.body.style.overflow = '';
             activeBtn = null;
         }
+
+        // Handle click on action buttons
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.action-btn');
+
+            // If clicked outside the dropdown and outside action buttons, close
+            if (!btn && !e.target.closest('#actionDropdown')) {
+                closeDropdown();
+                return;
+            }
+
+            if (!btn) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Toggle if clicking same button
+            if (activeBtn === btn && !dropdown.classList.contains('hidden')) {
+                closeDropdown();
+                return;
+            }
+
+            openDropdown(btn);
+        });
+
+        // Close dropdown on overlay click
+        overlay.addEventListener('click', closeDropdown);
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDropdown();
+        });
+
+        // Close on scroll or resize to prevent misaligned dropdown
+        window.addEventListener('scroll', closeDropdown, true);
+        window.addEventListener('resize', closeDropdown);
     </script>
 </x-app-layout>

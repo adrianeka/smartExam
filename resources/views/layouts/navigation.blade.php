@@ -28,7 +28,7 @@
                 </div>
                 <div class="hidden sm:flex flex-col items-start leading-tight">
                     <span class="text-sm font-semibold text-gray-800">{{ Auth::user()->name }}</span>
-                    <span class="text-[11px] text-white bg-blue-500 rounded px-1.5 py-0.5 font-medium mt-0.5">{{Auth::user()->role}}</span>
+                    <span class="text-[11px] text-white bg-blue-500 rounded px-1.5 py-0.5 font-medium mt-0.5">{{ ucfirst(Auth::user()->roles->first()?->name ?? Auth::user()->role ?? 'siswa') }}</span>
                 </div>
                 <i class="fa-solid fa-chevron-down text-gray-400 text-xs hidden sm:block"></i>
             </button>

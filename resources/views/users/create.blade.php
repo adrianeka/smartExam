@@ -1,6 +1,17 @@
 <x-app-layout>
+<style>
+    /* Force hide native select arrow to prevent double-chevron */
+    select.select-no-arrow {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background-image: none !important;
+    }
+    select.select-no-arrow::-ms-expand {
+        display: none;
+    }
+</style>
 <body class="bg-gray-100 text-gray-700 font-sans">
-
 
 
     <div class="">
@@ -66,12 +77,23 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-2">Gambar</label>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">File</label>
                         <div class="flex items-center justify-between border border-gray-200 bg-gray-50/50 rounded-lg p-1.5 pl-4">
-                            <span class="text-sm text-gray-400">Upload your document</span>
+                            <span id="file-name-display" class="text-sm text-gray-400">Upload your document</span>
                             <label class="bg-white border border-gray-200 text-blue-600 font-semibold text-xs px-4 py-2 rounded-md shadow-2xs hover:bg-gray-50 cursor-pointer transition">
                                 Upload
-                                <input type="file" name="image" class="hidden">
+                                <input type="file" name="image" id="file-upload-input" class="hidden" onchange="
+                                    const display = document.getElementById('file-name-display');
+                                    if (this.files[0]) {
+                                        display.innerText = this.files[0].name;
+                                        display.classList.remove('text-gray-400');
+                                        display.classList.add('text-gray-700');
+                                    } else {
+                                        display.innerText = 'Upload your document';
+                                        display.classList.remove('text-gray-700');
+                                        display.classList.add('text-gray-400');
+                                    }
+                                ">
                             </label>
                         </div>
                         <p class="text-[11px] text-gray-400 mt-1.5"><i class="fa-solid fa-circle-info text-blue-500 mr-1"></i> Supported formats: PDF, DOC, DOCX (Max. 100MB)</p>
@@ -104,7 +126,7 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Profil</label>
                         <div class="relative">
-                            <select name="role" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none">
+                            <select name="role" class="select-no-arrow w-full px-4 py-2.5 pr-10 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition text-gray-700">
                                 <option value="" disabled selected>Pilih profil...</option>
                                 <option value="admin">Admin</option>
                                 <option value="teacher">Teacher</option>
@@ -119,7 +141,7 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Bahasa</label>
                         <div class="relative">
-                            <select name="language" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none">
+                            <select name="language" class="select-no-arrow w-full px-4 py-2.5 pr-10 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition text-gray-700">
                                 <option value="" disabled selected>Pilih bahasa...</option>
                                 <option value="id">Bahasa Indonesia</option>
                                 <option value="en">English</option>
@@ -141,8 +163,8 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Akun <span class="text-red-500">*</span></label>
                         <div class="flex items-center space-x-6">
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status-true" value="active" checked class="mr-2 text-blue-600"> Aktif</label>
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status-false" value="inactive" class="mr-2 text-blue-600"> Tidak aktif</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="active" checked class="mr-2 text-blue-600"> Aktif</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="rejected" class="mr-2 text-blue-600"> Tidak aktif</label>
                         </div>
                     </div>
 
@@ -192,7 +214,7 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Zona Waktu</label>
                         <div class="relative">
-                            <select name="timezone" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none text-gray-400">
+                            <select name="timezone" class="select-no-arrow w-full px-4 py-2.5 pr-10 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition text-gray-700">
                                 <option value="" disabled selected>Pilih zona waktu...</option>
                                 <option value="Asia/Jakarta">Asia/Jakarta (WIB)</option>
                                 <option value="Asia/Makassar">Asia/Makassar (WITA)</option>
@@ -207,7 +229,7 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Beri tahu melalui email jika ada undangan baru yang diterima</label>
                         <div class="relative">
-                            <select name="notify_invitation" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none text-gray-400">
+                            <select name="notify_invitation" class="select-no-arrow w-full px-4 py-2.5 pr-10 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition text-gray-700">
                                 <option value="" disabled selected>Pilih pemberitahuan...</option>
                                 <option value="yes">Ya</option>
                                 <option value="no">Tidak</option>
@@ -221,7 +243,7 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Beri tahu melalui email jika ada pesan pribadi baru yang diterima</label>
                         <div class="relative">
-                            <select name="notify_private_message" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none text-gray-400">
+                            <select name="notify_private_message" class="select-no-arrow w-full px-4 py-2.5 pr-10 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition text-gray-700">
                                 <option value="" disabled selected>Pilih pemberitahuan...</option>
                                 <option value="yes">Ya</option>
                                 <option value="no">Tidak</option>
@@ -235,7 +257,7 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Beri tahu melalui email jika ada pesan baru yang diterima di grup</label>
                         <div class="relative">
-                            <select name="notify_group_message" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition appearance-none text-gray-400">
+                            <select name="notify_group_message" class="select-no-arrow w-full px-4 py-2.5 pr-10 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition text-gray-700">
                                 <option value="" disabled selected>Pilih pemberitahuan...</option>
                                 <option value="yes">Ya</option>
                                 <option value="no">Tidak</option>

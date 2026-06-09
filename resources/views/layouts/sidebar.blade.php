@@ -28,7 +28,7 @@
             ]; @endphp
 
             @foreach($pembelajaranItems as $item)
-            <a href="#"
+            <a href="{{ route('dashboard') }}"
                class="nav-item flex items-center justify-between px-2 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 group transition-colors mb-0.5">
                 <span class="flex items-center gap-3">
                     <i class="{{ $item['icon'] }} icon w-5 text-center text-gray-400 group-hover:text-blue-500 transition-colors shrink-0"></i>
@@ -62,10 +62,10 @@
                  x-transition:enter-end="opacity-100"
                  class="submenu ml-4 pl-4 border-l-2 border-blue-500 mt-1 mb-1 space-y-0.5 label-text">
                 <a href="{{ route('admin.users.index') }}" class="block py-2 px-2 text-sm text-blue-600 font-medium rounded hover:bg-blue-50 transition">Daftar Pengguna</a>
-                <a href="#" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Impor Pengguna (XML/CSV)</a>
-                <a href="#" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Ekspor Pengguna</a>
-                <a href="#" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Profiling</a>
-                <a href="#" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Kelas</a>
+                <a href="{{ route('dashboard') }}" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Impor Pengguna (XML/CSV)</a>
+                <a href="{{ route('dashboard') }}" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Ekspor Pengguna</a>
+                <a href="{{ route('dashboard') }}" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Profiling</a>
+                <a href="{{ route('dashboard') }}" class="block py-2 px-2 text-sm text-gray-500 rounded hover:bg-gray-50 hover:text-gray-800 transition">Kelas</a>
             </div>
         </div>
 
@@ -78,7 +78,7 @@
         ]; @endphp
 
         @foreach($adminItems as $item)
-        <a href="#"
+        <a href="{{ route('dashboard') }}"
            class="nav-item flex items-center justify-between px-2 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 group transition-colors mb-0.5">
             <span class="flex items-center gap-3">
                 <i class="{{ $item['icon'] }} icon w-5 text-center text-gray-400 group-hover:text-blue-500 transition-colors shrink-0"></i>
