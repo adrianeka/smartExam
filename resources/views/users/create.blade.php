@@ -163,8 +163,8 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Akun <span class="text-red-500">*</span></label>
                         <div class="flex items-center space-x-6">
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="active" checked class="mr-2 text-blue-600"> Aktif</label>
-                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status" value="rejected" class="mr-2 text-blue-600"> Tidak aktif</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status-true" value="active" checked class="mr-2 text-blue-600"> Aktif</label>
+                            <label class="flex items-center text-xs text-gray-600 cursor-pointer"><input type="radio" name="status-false" value="rejected" class="mr-2 text-blue-600"> Tidak aktif</label>
                         </div>
                     </div>
 
