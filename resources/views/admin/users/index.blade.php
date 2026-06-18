@@ -356,7 +356,7 @@
                                     <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                                         style="background:{{ $color }}">{{ $initials }}</div>
                                     <div>
-                                        <p class="font-semibold text-gray-800 text-sm">{{ $user->name }}</p>
+                                        <a href="{{ route('admin.users.show', $user->id) }}" class="font-semibold text-gray-800 text-sm hover:text-blue-600 hover:underline transition">{{ $user->name }}</a>
                                         <p class="text-xs text-gray-400">{{ $user->id }}</p>
                                     </div>
                                 </div>
@@ -369,13 +369,25 @@
                             <td class="px-4 py-3 text-sm text-gray-600">{{ $user->created_at?->format('d M Y, H:i') ?? '-' }}</td>
                             <td class="px-4 py-3 text-sm text-gray-600">{{ $user->updated_at?->format('d M Y, H:i') ?? '-' }}</td>
                             <td class="px-4 py-3">
-                                <button class="action-btn p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" data-user-id="{{ $user->id }}" title="Aksi lainnya">
-                                    <svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24">
-                                        <circle cx="12" cy="5" r="1.5"/>
-                                        <circle cx="12" cy="12" r="1.5"/>
-                                        <circle cx="12" cy="19" r="1.5"/>
-                                    </svg>
-                                </button>
+                                @if($user->status === 'pending')
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" onclick="document.getElementById('approve-form-{{ $user->id }}').submit();" class="p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition" title="Setujui Akun">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        </button>
+                                        
+                                        <button type="button" onclick="if(confirm('Apakah Anda yakin ingin menolak akun ini?')) document.getElementById('reject-form-{{ $user->id }}').submit();" class="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition" title="Tolak Akun">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </button>
+                                    </div>
+                                @else
+                                    <button class="action-btn p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" data-user-id="{{ $user->id }}" title="Aksi lainnya">
+                                        <svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24">
+                                            <circle cx="12" cy="5" r="1.5"/>
+                                            <circle cx="12" cy="12" r="1.5"/>
+                                            <circle cx="12" cy="19" r="1.5"/>
+                                        </svg>
+                                    </button>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -396,6 +408,18 @@
         </div>
     </div>
     </form>
+
+    {{-- Hidden Forms for Approve/Reject --}}
+    @foreach($users as $user)
+        @if($user->status === 'pending')
+            <form id="approve-form-{{ $user->id }}" action="{{ route('admin.users.approve', $user) }}" method="POST" class="hidden">
+                @csrf
+            </form>
+            <form id="reject-form-{{ $user->id }}" action="{{ route('admin.users.reject', $user) }}" method="POST" class="hidden">
+                @csrf
+            </form>
+        @endif
+    @endforeach
 
     <!-- Dropdown Action Card -->
     <div id="actionDropdown"

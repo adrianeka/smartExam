@@ -72,7 +72,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-2">Nomor Telepon</label>
-                            <input type="text" name="phone" placeholder="Masukkan nomor telepon" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                            <input type="number" name="phone" placeholder="Masukkan nomor telepon" class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition">
                         </div>
                     </div>
 

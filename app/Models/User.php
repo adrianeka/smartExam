@@ -35,21 +35,21 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'first_login_at' => 'datetime',
+        'last_login_at' => 'datetime',
+        'last_course_login_at' => 'datetime',
+    ];
 
     public function hasVerifiedEmail(): bool
     {
-        if ($this->role === 'admin') {
+        if ($this->hasRole('admin')) {
             return true;
         }
 
@@ -62,5 +62,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function roleName(){
         return $this->getRoleNames()->first();
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class)->withPivot(['working_time', 'result', 'is_completed', 'progress'])->withTimestamps();
     }
 }
