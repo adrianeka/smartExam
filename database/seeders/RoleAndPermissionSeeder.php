@@ -14,22 +14,22 @@
             app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
             // 1. Buat Permission (Contoh opsional untuk memperjelas hak akses)
-            Permission::create(['name' => 'manage users']);
-            Permission::create(['name' => 'create courses']);
-            Permission::create(['name' => 'view courses']);
+            Permission::firstOrCreate(['name' => 'manage users']);
+            Permission::firstOrCreate(['name' => 'create courses']);
+            Permission::firstOrCreate(['name' => 'view courses']);
 
             // 2. Buat Role dan Berikan Permission
             
             // Admin: Punya semua akses
-            $adminRole = Role::create(['name' => 'admin']);
-            $adminRole->givePermissionTo(Permission::all());
+            $adminRole = Role::firstOrCreate(['name' => 'admin']);
+            $adminRole->syncPermissions(Permission::all());
 
             // Teacher: Bisa membuat dan melihat materi/kelas
-            $teacherRole = Role::create(['name' => 'teacher']);
-            $teacherRole->givePermissionTo(['create courses', 'view courses']);
+            $teacherRole = Role::firstOrCreate(['name' => 'teacher']);
+            $teacherRole->syncPermissions(['create courses', 'view courses']);
 
             // Student: Hanya bisa melihat materi/kelas
-            $studentRole = Role::create(['name' => 'student']);
-            $studentRole->givePermissionTo('view courses');
+            $studentRole = Role::firstOrCreate(['name' => 'student']);
+            $studentRole->syncPermissions(['view courses']);
         }
     }

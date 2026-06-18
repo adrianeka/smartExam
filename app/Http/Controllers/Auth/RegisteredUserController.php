@@ -34,11 +34,13 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'status' => 'pending',
-            'role' => 'siswa',
+            // 'role' => 'siswa', // Removed hardcoded string role
         ]);
 
+        $user->assignRole('student');
+
         // Kirim notif ke admin
-        $admin = User::where('role', 'admin')->first();
+        $admin = User::role('admin')->first();
         if ($admin) {
             $admin->notify(new NewUserRegistered($user));
         }

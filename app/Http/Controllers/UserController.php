@@ -118,4 +118,13 @@ class UserController extends Controller
     //         ->with('success', 'User deleted successfully.');
     // }
 
+    public function show(User $user)
+    {
+        // Load courses with pivot data
+        $user->load(['courses' => function ($query) {
+            $query->withPivot(['time_spent_seconds', 'total_posts']);
+        }]);
+
+        return view('users.show', compact('user'));
+    }
 }
