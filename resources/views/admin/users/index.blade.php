@@ -497,7 +497,7 @@
             // Since there's no edit route yet, we keep it as '#' for now
             const editLink = document.getElementById('dropdownEditLink');
             if (editLink) {
-                editLink.href = '#'; // Will be: /admin/users/{id}/edit when route exists
+                editLink.href = '/admin/user/${userId}/edit'; // Will be: /admin/users/{id}/edit when route exists
             }
 
             const rect = btn.getBoundingClientRect();

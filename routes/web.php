@@ -35,6 +35,12 @@ Route::middleware(['auth'])->group(function () {
 
         // Route untuk menampilkan halaman form (Bisa diakses oleh Admin)
         Route::get('/tambah-pengguna', [UserController::class, 'create'])->name('user.create');
+        Route::resource('users', UserController::class)
+            ->only(['edit', 'update'])
+            ->names([
+                'edit' => 'user.edit',
+                'update' => 'user.update',
+            ]);
         // Route untuk memproses data saat tombol "Simpan" diklik
         Route::post('/tambah-pengguna', [UserController::class, 'store'])->name('user.store');
     });

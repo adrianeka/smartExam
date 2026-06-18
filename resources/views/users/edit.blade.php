@@ -46,8 +46,9 @@
                 
                 <h2 class="text-xl font-bold text-gray-800 mb-8">Tambah Pengguna</h2>
 
-                <form action="{{ route('admin.user.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ route('admin.user.update', $user) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
+                    @method('PUT')
                     @include('users.form')
                 </form>
             </div>

@@ -74,33 +74,35 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', $message);
     }
 
-    // public function edit(User $user)
-    // {
-    //     $roles        = Role::all();
-    //     $userRoleIds  = $user->roles->pluck('id')->toArray();
+    public function edit(User $user)
+    {
+        $roles        = Role::all();
+        $userRoleIds  = $user->roles->pluck('id')->toArray();
 
-    //     return view('users.edit', compact('user', 'roles', 'userRoleIds'));
-    // }
+        return view('users.edit', compact('user', 'roles', 'userRoleIds'));
+    }
 
-    //  public function update(Request $request, User $user)
-    // {
-    //     $data = $request->validate([
-    //         'name'    => ['required', 'string', 'max:255'],
-    //         'email'   => ['required', 'email', "unique:users,email,{$user->id}"],
-    //         'roles'   => ['required', 'array', 'min:1'],
-    //         'roles.*' => ['exists:roles,id'],
-    //     ]);
+     public function update(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'name'    => ['required', 'string', 'max:255'],
+            'email'   => ['required', 'email', "unique:users,email,{$user->id}"],
+            'roles'   => ['required', 'array', 'min:1'],
+            'roles.*' => ['exists:roles,id'],
+            'status' => ['required', 'in:active,rejected,pending']
+        ]);
 
-    //     $user->update([
-    //         'name'  => $data['name'],
-    //         'email' => $data['email'],
-    //     ]);
+        $user->update([
+            'name'  => $data['name'],
+            'email' => $data['email'],
+            'status' => $data['status']
+        ]);
 
-    //     $user->syncRoles($data['roles']);
+        $user->syncRoles($data['roles']);
 
-    //     return redirect()->route('users.index')
-    //         ->with('success', "User \"{$user->name}\" updated successfully.");
-    // }
+        return redirect()->route('users.index')
+            ->with('success', "User \"{$user->name}\" updated successfully.");
+    }
 
     // // ── Delete user ───────────────────────────────────────────────────────────
     // public function destroy(User $user)
