@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/auth.php';
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserActivationController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DynamicPageController;
 use Spatie\Permission\Models\Role;
 use App\Http\Middleware\RoleRedirectMiddleware;
 
@@ -20,6 +22,10 @@ Route::get('/register/pending', function () {
 
 
 Route::middleware(['auth'])->group(function () {
+    // Dynamic Page Route
+    Route::get('/channel/{menu}', [DynamicPageController::class, 'show'])->name('dynamic-page.show');
+    Route::get('/channel/{menu}/edit', [DynamicPageController::class, 'editContent'])->name('dynamic-page.edit');
+    Route::put('/channel/{menu}/edit', [DynamicPageController::class, 'updateContent'])->name('dynamic-page.update');
 
     Route::get('/dashboard', function () {
         $stats = [];
@@ -91,8 +97,15 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('courses.exams', App\Http\Controllers\ExamController::class)->shallow();
         Route::resource('exams.questions', App\Http\Controllers\QuestionController::class)->shallow();
         
-        // Route untuk Manajemen Role
+        // Route untuk Manajemen Role & Menu
         Route::resource('roles', App\Http\Controllers\RoleController::class);
+        
+        // Discord style settings
+        Route::get('/menus/{menu}/settings', [App\Http\Controllers\MenuSettingsController::class, 'show'])->name('menus.settings');
+        
+        Route::get('/menus/{menu}/access', [App\Http\Controllers\MenuAccessController::class, 'index'])->name('menus.access');
+        Route::post('/menus/{menu}/access', [App\Http\Controllers\MenuAccessController::class, 'update'])->name('menus.access.update');
+        Route::resource('menus', App\Http\Controllers\MenuController::class);
     });
 
 });
