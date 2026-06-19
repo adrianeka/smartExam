@@ -5,94 +5,124 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
-    public function __construct()
-    {
-        // Gate-keep every action with the matching permission
-        $this->middleware('permission:role.view',   ['only' => ['index', 'show']]);
-        $this->middleware('permission:role.create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:role.edit',   ['only' => ['edit', 'update']]);
-        $this->middleware('permission:role.delete', ['only' => ['destroy']]);
-    }
-
-    // ── List all roles ────────────────────────────────────────────────────────
+    /**
+     * Tampilkan semua role.
+     */
     public function index()
     {
-        $roles = Role::withCount('permissions', 'users')->latest()->paginate(10);
-
-        return view('roles.index', compact('roles'));
+        $roles = Role::with('permissions')->get();
+        return view('admin.roles.index', compact('roles'));
     }
 
-    // ── Create form ───────────────────────────────────────────────────────────
+    /**
+     * Tampilkan form untuk membuat role baru.
+     */
     public function create()
     {
-        $permissions = Permission::all()->groupBy(fn ($p) => explode('.', $p->name)[0]);
+        // Kelompokkan permission untuk UI yang rapi (Discord Style)
+        $permissions = Permission::all()->groupBy(function($permission) {
+            if (str_contains($permission->name, 'user')) return 'User Management';
+            if (str_contains($permission->name, 'role')) return 'Role Management';
+            if (str_contains($permission->name, 'course')) return 'Course Management';
+            if (str_contains($permission->name, 'enrollment')) return 'Enrollment Management';
+            if (str_contains($permission->name, 'report')) return 'Report Management';
+            return 'Other Permissions';
+        });
 
-        return view('roles.create', compact('permissions'));
+        return view('admin.roles.create', compact('permissions'));
     }
 
-    // ── Store new role ────────────────────────────────────────────────────────
+    /**
+     * Simpan role baru ke database.
+     */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name'        => ['required', 'string', 'max:100', 'unique:roles,name'],
-            'permissions' => ['nullable', 'array'],
-            'permissions.*' => ['exists:permissions,id'],
+        $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,name'
         ]);
 
-        $role = Role::create(['name' => $data['name']]);
-        $role->syncPermissions($data['permissions'] ?? []);
+        $role = Role::create(['name' => $request->name]);
+        
+        if ($request->has('permissions')) {
+            $role->syncPermissions($request->permissions);
+        }
 
-        return redirect()->route('roles.index')
-            ->with('success', "Role \"{$role->name}\" created successfully.");
+        return redirect()->route('admin.roles.index')->with('success', 'Role berhasil dibuat!');
     }
 
-    // ── Show single role ──────────────────────────────────────────────────────
-    public function show(Role $role)
-    {
-        $role->load('permissions', 'users');
-
-        return view('roles.show', compact('role'));
-    }
-
-    // ── Edit form ─────────────────────────────────────────────────────────────
+    /**
+     * Tampilkan form untuk mengedit role.
+     */
     public function edit(Role $role)
     {
-        $permissions    = Permission::all()->groupBy(fn ($p) => explode('.', $p->name)[0]);
-        $rolePermIds    = $role->permissions->pluck('id')->toArray();
+        // Jangan izinkan edit role super admin
+        if ($role->name === 'admin') {
+            return redirect()->route('admin.roles.index')->with('error', 'Role Admin utama tidak dapat diubah hak aksesnya.');
+        }
 
-        return view('roles.edit', compact('role', 'permissions', 'rolePermIds'));
+        $permissions = Permission::all()->groupBy(function($permission) {
+            if (str_contains($permission->name, 'user')) return 'User Management';
+            if (str_contains($permission->name, 'role')) return 'Role Management';
+            if (str_contains($permission->name, 'course')) return 'Course Management';
+            if (str_contains($permission->name, 'enrollment')) return 'Enrollment Management';
+            if (str_contains($permission->name, 'report')) return 'Report Management';
+            return 'Other Permissions';
+        });
+
+        $rolePermissions = $role->permissions->pluck('name')->toArray();
+
+        return view('admin.roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
-    // ── Update role ───────────────────────────────────────────────────────────
+    /**
+     * Update role.
+     */
     public function update(Request $request, Role $role)
     {
-        $data = $request->validate([
-            'name'          => ['required', 'string', 'max:100', "unique:roles,name,{$role->id}"],
-            'permissions'   => ['nullable', 'array'],
-            'permissions.*' => ['exists:permissions,id'],
+        if ($role->name === 'admin') {
+            return redirect()->route('admin.roles.index')->with('error', 'Role Admin utama tidak dapat diedit.');
+        }
+
+        $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('roles', 'name')->ignore($role->id)
+            ],
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,name'
         ]);
 
-        $role->update(['name' => $data['name']]);
-        $role->syncPermissions($data['permissions'] ?? []);
+        // Role bawaan selain admin tidak boleh diganti namanya
+        if (in_array($role->name, ['teacher', 'student']) && $request->name !== $role->name) {
+            return redirect()->back()->with('error', 'Nama role bawaan (teacher/student) tidak dapat diubah.');
+        }
 
-        return redirect()->route('roles.index')
-            ->with('success', "Role \"{$role->name}\" updated successfully.");
+        $role->update(['name' => $request->name]);
+
+        $role->syncPermissions($request->permissions ?? []);
+
+        return redirect()->route('admin.roles.index')->with('success', 'Role berhasil diperbarui!');
     }
 
-    // ── Delete role ───────────────────────────────────────────────────────────
+    /**
+     * Hapus role.
+     */
     public function destroy(Role $role)
     {
-        // Prevent deletion of the core roles
-        if (in_array($role->name, ['admin', 'manager', 'user'])) {
-            return back()->with('error', "Cannot delete the built-in role \"{$role->name}\".");
+        if (in_array($role->name, ['admin', 'teacher', 'student'])) {
+            return redirect()->route('admin.roles.index')->with('error', 'Role sistem bawaan tidak dapat dihapus.');
         }
 
         $role->delete();
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Role deleted successfully.');
+        return redirect()->route('admin.roles.index')->with('success', 'Role berhasil dihapus!');
     }
 }

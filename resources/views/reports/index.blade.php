@@ -22,11 +22,13 @@
                         <div class="flex-grow border-t border-gray-200"></div>
                     </div>
                     <div class="ml-4 shrink-0">
-                        <select class="text-xs border-none bg-transparent text-gray-500 focus:ring-0 cursor-pointer outline-none">
-                            <option>Tampilkan 10 Data</option>
-                            <option>Tampilkan 25 Data</option>
-                            <option>Tampilkan 50 Data</option>
-                        </select>
+                        <form method="GET" action="{{ route('admin.reports.index') }}" class="inline-block">
+                            <select name="per_page" onchange="this.form.submit()" class="text-xs border-none bg-transparent text-gray-500 focus:ring-0 cursor-pointer outline-none">
+                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>Tampilkan 10 Data</option>
+                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>Tampilkan 25 Data</option>
+                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>Tampilkan 50 Data</option>
+                            </select>
+                        </form>
                     </div>
                 </div>
 
@@ -40,7 +42,7 @@
                                 <th class="py-4 px-4 font-semibold whitespace-nowrap">Jam Kerja</th>
                                 <th class="py-4 px-4 font-semibold whitespace-nowrap">Hasil</th>
                                 <th class="py-4 px-4 font-semibold whitespace-nowrap">Selesai</th>
-                                <th class="py-4 px-4 font-semibold whitespace-nowrap text-right">Mata Kuliah</th>
+                                <th class="py-4 px-4 font-semibold whitespace-nowrap text-right">Progress</th>
                             </tr>
                         </thead>
                         <tbody class="text-sm text-gray-600 divide-y divide-gray-50">
@@ -71,22 +73,9 @@
                     </table>
                 </div>
 
-                <!-- Pagination Footer (Mocked visually like design) -->
-                <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
-                    <div>
-                        <select class="text-xs border border-gray-200 bg-gray-50 text-gray-500 rounded-lg py-2 px-3 focus:ring-0 focus:border-gray-300 outline-none">
-                            <option>Tampilkan 1 s.d. 10</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center space-x-1">
-                        <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-100 text-blue-600 text-xs font-bold">1</button>
-                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 text-xs transition">2</button>
-                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 text-xs transition">3</button>
-                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-blue-500 text-xs transition"><i class="fa-solid fa-chevron-left"></i></button>
-                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-blue-500 text-xs transition"><i class="fa-solid fa-chevron-right"></i></button>
-                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-blue-500 text-xs transition"><i class="fa-solid fa-angles-right"></i></button>
-                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-blue-500 text-xs transition"><i class="fa-solid fa-angles-right"></i></button>
-                    </div>
+                <!-- Pagination Footer -->
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    {{ $reports->links() }}
                 </div>
 
             </div>

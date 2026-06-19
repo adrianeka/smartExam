@@ -17,6 +17,16 @@ class Course extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class)->withPivot(['working_time', 'result', 'is_completed', 'progress'])->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('time_spent_seconds', 'total_posts')->withTimestamps();
+    }
+
+    public function modules()
+    {
+        return $this->hasMany(Module::class)->orderBy('order_index');
+    }
+
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
     }
 }

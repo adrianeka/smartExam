@@ -115,11 +115,20 @@
                 </div>
 
                 <!-- List Header -->
-                <div class="flex items-center justify-between mb-4 mt-6">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center w-full">
-                        List <span class="ml-4 flex-1 h-px bg-gray-200 inline-block align-middle"></span>
-                    </h3>
-                    <div class="ml-4 flex items-center gap-2 text-xs text-gray-500 cursor-pointer hover:text-gray-700 transition whitespace-nowrap bg-white px-3 py-1.5 border border-gray-200 rounded-lg shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 mt-6 gap-4">
+                    <div class="flex items-center gap-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">List</h3>
+                        <div class="h-4 w-px bg-gray-200"></div>
+                        <div class="flex items-center gap-2">
+                            <select id="bulkActionSelect" class="border border-gray-200 rounded-lg text-sm pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 bg-white">
+                                <option value="">Aksi Massal...</option>
+                                <option value="delete">Hapus Terpilih</option>
+                            </select>
+                            <button type="button" onclick="executeBulkAction()" id="bulkActionBtn" class="bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition opacity-50 cursor-not-allowed">Terapkan</button>
+                        </div>
+                    </div>
+                    <div class="ml-auto flex-1 h-px bg-gray-200 inline-block align-middle hidden sm:block mx-4"></div>
+                    <div class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer hover:text-gray-700 transition whitespace-nowrap bg-white px-3 py-1.5 border border-gray-200 rounded-lg shadow-sm">
                         <span>Tampilkan {{ $courses->perPage() }} Data</span>
                         <i class="fa-solid fa-chevron-down text-[10px]"></i>
                     </div>
@@ -136,7 +145,7 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="text-blue-500 text-xs font-bold border-b border-gray-100">
-                                <th class="py-4 px-4 w-10 text-center"><input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></th>
+                                <th class="py-4 px-4 w-10 text-center"><input type="checkbox" onclick="toggleAllCheckboxes(this)" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></th>
                                 <th class="py-4 px-4 whitespace-nowrap cursor-pointer hover:text-blue-600">Judul</th>
                                 <th class="py-4 px-4 whitespace-nowrap cursor-pointer hover:text-blue-600">Bahasa <i class="fa-solid fa-arrow-down-short-wide ml-1 text-[10px]"></i></th>
                                 <th class="py-4 px-4 whitespace-nowrap cursor-pointer hover:text-blue-600">Kategori <i class="fa-solid fa-arrow-down-short-wide ml-1 text-[10px]"></i></th>
@@ -148,7 +157,7 @@
                         <tbody class="text-sm text-gray-600 divide-y divide-gray-50">
                             @forelse($courses as $course)
                             <tr class="hover:bg-gray-50/50 transition-colors group">
-                                <td class="py-3 px-4 text-center"><input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm"></td>
+                                <td class="py-3 px-4 text-center"><input type="checkbox" value="{{ $course->id }}" onchange="updateBulkActionButton()" class="rounded border-gray-300 text-blue-600 shadow-sm row-checkbox"></td>
                                 <td class="py-3 px-4">
                                     <div class="font-bold text-gray-800">{{ $course->name }}</div>
                                     <div class="text-[10px] text-gray-400 font-semibold uppercase">{{ $course->code }}</div>
@@ -180,6 +189,7 @@
                                         <div x-show="open" x-transition class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100 py-2 z-20" style="display: none;">
                                             <a href="#" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-solid fa-arrow-up-right-from-square w-5 text-center mr-2 text-blue-500"></i> Situs Mata Kuliah</a>
                                             <a href="#" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-solid fa-magnifying-glass w-5 text-center mr-2 text-blue-500"></i> Penelusuran</a>
+                                            <a href="{{ route('admin.courses.show', $course) }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-solid fa-book-open w-5 text-center mr-2 text-blue-500"></i> Kelola Konten & Ujian</a>
                                             <a href="{{ route('admin.courses.edit', $course) }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-regular fa-pen-to-square w-5 text-center mr-2 text-blue-500"></i> Ubah Mata Kuliah</a>
                                             <a href="#" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-solid fa-box-archive w-5 text-center mr-2 text-blue-500"></i> Buat Cadangan</a>
                                             <div class="h-px bg-gray-100 my-1"></div>
@@ -206,7 +216,7 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="text-blue-500 text-xs font-bold border-b border-gray-100">
-                                <th class="py-4 px-4 w-10 text-center"><input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></th>
+                                <th class="py-4 px-4 w-10 text-center"><input type="checkbox" onclick="toggleAllCheckboxes(this)" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></th>
                                 <th class="py-4 px-4 whitespace-nowrap cursor-pointer hover:text-blue-600">Judul</th>
                                 <th class="py-4 px-4 whitespace-nowrap cursor-pointer hover:text-blue-600">Guru</th>
                                 <th class="py-4 px-4 whitespace-nowrap cursor-pointer hover:text-blue-600">Tanggal<br>Pembuatan <i class="fa-solid fa-arrow-down-short-wide ml-1 text-[10px]"></i></th>
@@ -217,7 +227,7 @@
                         <tbody class="text-sm text-gray-600 divide-y divide-gray-50">
                             @forelse($courses as $course)
                             <tr class="hover:bg-gray-50/50 transition-colors group">
-                                <td class="py-4 px-4 text-center align-top"><input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm mt-1"></td>
+                                <td class="py-4 px-4 text-center align-top"><input type="checkbox" value="{{ $course->id }}" onchange="updateBulkActionButton()" class="rounded border-gray-300 text-blue-600 shadow-sm mt-1 row-checkbox"></td>
                                 <td class="py-4 px-4 align-top">
                                     <div class="font-bold text-gray-800">{{ $course->name }}</div>
                                     <div class="text-[10px] text-gray-400 font-semibold uppercase">{{ $course->code }}</div>
@@ -249,6 +259,7 @@
                                         <!-- Action Dropdown -->
                                         <div x-show="open" x-transition class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100 py-2 z-20" style="display: none;">
                                             <a href="#" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-solid fa-magnifying-glass w-5 text-center mr-2 text-blue-500"></i> Penelusuran</a>
+                                            <a href="{{ route('admin.courses.show', $course) }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-solid fa-book-open w-5 text-center mr-2 text-blue-500"></i> Kelola Konten & Ujian</a>
                                             <a href="{{ route('admin.courses.edit', $course) }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-regular fa-pen-to-square w-5 text-center mr-2 text-blue-500"></i> Ubah Mata Kuliah</a>
                                             <a href="#" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition font-medium"><i class="fa-solid fa-box-archive w-5 text-center mr-2 text-blue-500"></i> Buat Cadangan</a>
                                             <div class="h-px bg-gray-100 my-1"></div>
@@ -276,6 +287,10 @@
                 </div>
             </div>
             
+            <form id="realBulkActionForm" action="{{ route('admin.courses.bulk') }}" method="POST" class="hidden">
+                @csrf
+            </form>
+
             <footer class="mt-8 text-xs text-gray-400 flex justify-between px-2">
                 <p>&copy; 2026 Smart Exam | All rights reserved.</p>
                 <div class="flex gap-4">
@@ -286,4 +301,68 @@
             </footer>
         </main>
     </div>
+    
+    <script>
+        function toggleAllCheckboxes(source) {
+            // Get checkboxes visible in the active tab
+            const activeTab = document.querySelector('[x-show="activeTab === \'standar\'"]').style.display !== 'none' ? 'standar' : 'manajemen';
+            const tableContainer = document.querySelector(`[x-show="activeTab === '${activeTab}'"]`);
+            
+            const checkboxes = tableContainer.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => cb.checked = source.checked);
+            updateBulkActionButton();
+        }
+
+        function updateBulkActionButton() {
+            const anyChecked = document.querySelectorAll('.row-checkbox:checked').length > 0;
+            const selectVal = document.getElementById('bulkActionSelect').value;
+            const btn = document.getElementById('bulkActionBtn');
+            
+            // Remove all dynamic classes
+            btn.classList.remove('bg-gray-100', 'text-gray-500', 'opacity-50', 'cursor-not-allowed', 'bg-blue-600', 'hover:bg-blue-700', 'bg-red-600', 'hover:bg-red-700', 'text-white');
+            
+            if (anyChecked && selectVal) {
+                btn.classList.add('text-white');
+                if (selectVal === 'delete') {
+                    btn.classList.add('bg-red-600', 'hover:bg-red-700');
+                } else {
+                    btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                }
+            } else {
+                btn.classList.add('bg-gray-100', 'text-gray-500', 'opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        document.getElementById('bulkActionSelect').addEventListener('change', updateBulkActionButton);
+
+        function executeBulkAction() {
+            const selectVal = document.getElementById('bulkActionSelect').value;
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            
+            if (!selectVal || checkboxes.length === 0) return;
+            
+            if (!confirm(`Apakah Anda yakin ingin menghapus ${checkboxes.length} mata kuliah terpilih?`)) {
+                return;
+            }
+
+            const form = document.getElementById('realBulkActionForm');
+            form.innerHTML = '<input type="hidden" name="_token" value="{{ csrf_token() }}">';
+            
+            const actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = selectVal;
+            form.appendChild(actionInput);
+
+            checkboxes.forEach(cb => {
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'ids[]';
+                idInput.value = cb.value;
+                form.appendChild(idInput);
+            });
+
+            form.submit();
+        }
+    </script>
 </x-app-layout>

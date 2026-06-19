@@ -27,6 +27,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'in:student,teacher'],
         ]);
 
         $user = User::create([
@@ -34,10 +35,9 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'status' => 'pending',
-            // 'role' => 'siswa', // Removed hardcoded string role
         ]);
 
-        $user->assignRole('student');
+        $user->assignRole($request->role);
 
         // Kirim notif ke admin
         $admin = User::role('admin')->first();

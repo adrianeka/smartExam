@@ -112,9 +112,7 @@
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">Daftar Pengguna</h1>
                 <p class="text-sm text-gray-500 mt-1 max-w-xl">
-                    Lorem ipsum dolor sit amet consectetur. Porttitor penatibus felis integer eget aliquam aliquam.
-                    Natoque blandit id tellus risus in consectetur justo sit. Nulla et molestie in maecenas aliquet et.
-                    Vitae at tellus nunc non viverra placerat pulvinar amet massa.
+                    Kelola semua akun pengguna yang terdaftar di dalam platform Smart Exam. Anda dapat melihat status aktivasi, mengubah profil dan hak akses (role), serta melakukan tindakan administratif lainnya secara langsung dari halaman ini.
                 </p>
             </div>
             <a href="{{ route('admin.user.create') }}"
@@ -249,8 +247,20 @@
 
     <!-- Table -->
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <span class="text-sm font-semibold text-gray-700">List</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between px-5 py-4 border-b border-gray-100 gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-sm font-semibold text-gray-700">List</span>
+                <div class="h-4 w-px bg-gray-200"></div>
+                <div class="flex items-center gap-2">
+                    <select id="bulkActionSelect" class="border border-gray-200 rounded-lg text-sm pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 bg-white">
+                        <option value="">Aksi Massal...</option>
+                        <option value="delete">Hapus Terpilih</option>
+                        <option value="approve">Setujui Terpilih</option>
+                        <option value="reject">Tolak Terpilih</option>
+                    </select>
+                    <button type="button" onclick="executeBulkAction()" id="bulkActionBtn" class="bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition opacity-50 cursor-not-allowed">Terapkan</button>
+                </div>
+            </div>
             <div class="flex items-center gap-2">
                 <span class="text-sm text-gray-500">Tampilkan</span>
                 <div class="relative">
@@ -272,7 +282,7 @@
             <table class="w-full text-sm">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100">
-                        <th class="w-10 px-4 py-3"><input type="checkbox" class="checkbox-custom" /></th>
+                        <th class="w-10 px-4 py-3"><input type="checkbox" id="checkAll" class="checkbox-custom" onclick="toggleAllCheckboxes(this)" /></th>
                         <th class="px-4 py-3 text-left">
                             <button
                                 class="flex items-center gap-1 text-blue-600 font-semibold text-xs uppercase tracking-wide hover:text-blue-800">
@@ -350,7 +360,7 @@
                             $roleName = $user->roles->first()?->name ?? $user->role ?? '-';
                         @endphp
                         <tr class="border-b border-gray-50 transition-colors">
-                            <td class="px-4 py-3"><input type="checkbox" class="checkbox-custom" /></td>
+                            <td class="px-4 py-3"><input type="checkbox" value="{{ $user->id }}" class="checkbox-custom row-checkbox" onchange="updateBulkActionButton()" /></td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
                                     <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
@@ -409,6 +419,10 @@
     </div>
     </form>
 
+    <form id="realBulkActionForm" action="{{ route('admin.users.bulk') }}" method="POST" class="hidden">
+        @csrf
+    </form>
+
     {{-- Hidden Forms for Approve/Reject --}}
     @foreach($users as $user)
         @if($user->status === 'pending')
@@ -425,40 +439,16 @@
     <div id="actionDropdown"
         class="hidden fixed z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 w-56 py-2 dropdown-menu">
         <div class="px-2">
-            <button
+            <a id="dropdownShowLink" href="#"
                 class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                </svg>
-                Daftar Mata Kuliah
-            </button>
-            <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                Sesi Mata Kuliah
-            </button>
-            <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Masuk Sebagai
-            </button>
-            <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Laporan Aktivitas
-            </button>
+                Lihat Detail
+            </a>
             <a id="dropdownEditLink" href="#"
                 class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -467,39 +457,19 @@
                 </svg>
                 Ubah Profil
             </a>
-            <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-                Tambah Keahlian
-            </button>
-            <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                Jadwal Kalender
-            </button>
-            <button
-                class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                </svg>
-                Anonimkan Data
-            </button>
             <div class="border-t border-gray-100 mt-1 pt-1">
-                <button
-                    class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-red-50 rounded-xl text-red-500 hover:text-red-600 transition-colors text-sm">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Hapus Pengguna
-                </button>
+                <form id="dropdownDeleteForm" action="#" method="POST" class="m-0 p-0">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus akun ini secara permanen?');"
+                        class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-red-50 rounded-xl text-red-500 hover:text-red-600 transition-colors text-sm text-left">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Hapus Pengguna
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -517,11 +487,22 @@
             activeBtn = btn;
             const userId = btn.dataset.userId;
 
+            // Update the show link
+            const showLink = document.getElementById('dropdownShowLink');
+            if (showLink) {
+                showLink.href = `/admin/users/${userId}`;
+            }
+
             // Update the edit link with the correct user id
-            // Since there's no edit route yet, we keep it as '#' for now
             const editLink = document.getElementById('dropdownEditLink');
             if (editLink) {
-                editLink.href = '#'; // Will be: /admin/users/{id}/edit when route exists
+                editLink.href = `/admin/users/${userId}/edit`;
+            }
+
+            // Update the delete form action with the correct user id
+            const deleteForm = document.getElementById('dropdownDeleteForm');
+            if (deleteForm) {
+                deleteForm.action = `/admin/users/${userId}`;
             }
 
             const rect = btn.getBoundingClientRect();
@@ -599,5 +580,68 @@
         // Close on scroll or resize to prevent misaligned dropdown
         window.addEventListener('scroll', closeDropdown, true);
         window.addEventListener('resize', closeDropdown);
+
+        // Bulk Actions JS
+        function toggleAllCheckboxes(source) {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => cb.checked = source.checked);
+            updateBulkActionButton();
+        }
+
+        function updateBulkActionButton() {
+            const anyChecked = document.querySelectorAll('.row-checkbox:checked').length > 0;
+            const selectVal = document.getElementById('bulkActionSelect').value;
+            const btn = document.getElementById('bulkActionBtn');
+            
+            // Remove all dynamic classes
+            btn.classList.remove('bg-gray-100', 'text-gray-500', 'opacity-50', 'cursor-not-allowed', 'bg-blue-600', 'hover:bg-blue-700', 'bg-red-600', 'hover:bg-red-700', 'text-white');
+            
+            if (anyChecked && selectVal) {
+                btn.classList.add('text-white');
+                if (selectVal === 'delete') {
+                    btn.classList.add('bg-red-600', 'hover:bg-red-700');
+                } else {
+                    btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                }
+            } else {
+                btn.classList.add('bg-gray-100', 'text-gray-500', 'opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        document.getElementById('bulkActionSelect').addEventListener('change', updateBulkActionButton);
+
+        function executeBulkAction() {
+            const selectVal = document.getElementById('bulkActionSelect').value;
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            
+            if (!selectVal || checkboxes.length === 0) return;
+            
+            let actionText = selectVal === 'delete' ? 'menghapus' : (selectVal === 'approve' ? 'menyetujui' : 'menolak');
+            if (!confirm(`Apakah Anda yakin ingin ${actionText} ${checkboxes.length} pengguna terpilih?`)) {
+                return;
+            }
+
+            const form = document.getElementById('realBulkActionForm');
+            form.innerHTML = '@csrf'; // reset form inputs except csrf (handled by laravel directive in html, but since we overwrite innerHTML we must re-add if needed, actually let's just append)
+            
+            // Re-fetch csrf from document meta if needed, but since we have it hardcoded in blade:
+            form.innerHTML = '<input type="hidden" name="_token" value="{{ csrf_token() }}">';
+            
+            const actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = selectVal;
+            form.appendChild(actionInput);
+
+            checkboxes.forEach(cb => {
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'ids[]';
+                idInput.value = cb.value;
+                form.appendChild(idInput);
+            });
+
+            form.submit();
+        }
     </script>
 </x-app-layout>

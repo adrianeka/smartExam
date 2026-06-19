@@ -73,9 +73,12 @@ class CourseController extends Controller
         $data['is_demo_content'] = $request->has('is_demo_content');
         $data['is_special_course'] = $request->has('is_special_course');
         
-        // Handling radio buttons explicitly if needed
-        $data['subscription_allowed'] = $request->input('subscription_type') === 'allowed';
-        $data['unsubscription_allowed'] = $request->input('unsubscription_type') === 'allowed';
+        if($request->has('is_registered_allowed')) {
+            $data['is_registered_allowed'] = $request->input('is_registered_allowed') == 1;
+        }
+        if($request->has('is_unregistered_allowed')) {
+            $data['is_unregistered_allowed'] = $request->input('is_unregistered_allowed') == 1;
+        }
 
         $course = Course::create($data);
 
@@ -106,11 +109,11 @@ class CourseController extends Controller
         $data['is_demo_content'] = $request->has('is_demo_content');
         $data['is_special_course'] = $request->has('is_special_course');
         
-        if($request->has('subscription_type')) {
-            $data['subscription_allowed'] = $request->input('subscription_type') === 'allowed';
+        if($request->has('is_registered_allowed')) {
+            $data['is_registered_allowed'] = $request->input('is_registered_allowed') == 1;
         }
-        if($request->has('unsubscription_type')) {
-            $data['unsubscription_allowed'] = $request->input('unsubscription_type') === 'allowed';
+        if($request->has('is_unregistered_allowed')) {
+            $data['is_unregistered_allowed'] = $request->input('is_unregistered_allowed') == 1;
         }
 
         $course->update($data);
@@ -131,5 +134,29 @@ class CourseController extends Controller
     {
         $course->delete();
         return redirect()->route('admin.courses.index')->with('success', 'Mata Kuliah berhasil dihapus.');
+    }
+
+    public function show(Course $course)
+    {
+        $course->load(['modules.lessons', 'exams.questions']);
+        return view('admin.courses.show', compact('course'));
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete',
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'exists:courses,id',
+        ]);
+
+        $action = $request->action;
+        $ids = $request->ids;
+
+        if ($action === 'delete') {
+            Course::whereIn('id', $ids)->delete();
+        }
+
+        return redirect()->back()->with('success', 'Berhasil memproses aksi massal pada ' . count($ids) . ' mata kuliah terpilih.');
     }
 }

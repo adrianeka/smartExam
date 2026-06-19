@@ -74,47 +74,118 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', $message);
     }
 
-    // public function edit(User $user)
-    // {
-    //     $roles        = Role::all();
-    //     $userRoleIds  = $user->roles->pluck('id')->toArray();
+    public function edit(User $user)
+    {
+        // Don't allow editing the main admin unless it's the admin themselves doing it
+        if ($user->hasRole('admin') && auth()->id() !== $user->id) {
+            return redirect()->route('admin.users.index')->with('error', 'Anda tidak dapat mengedit akun Super Admin lain.');
+        }
 
-    //     return view('users.edit', compact('user', 'roles', 'userRoleIds'));
-    // }
+        $roles        = Role::all();
+        $userRoleIds  = $user->roles->pluck('id')->toArray();
 
-    //  public function update(Request $request, User $user)
-    // {
-    //     $data = $request->validate([
-    //         'name'    => ['required', 'string', 'max:255'],
-    //         'email'   => ['required', 'email', "unique:users,email,{$user->id}"],
-    //         'roles'   => ['required', 'array', 'min:1'],
-    //         'roles.*' => ['exists:roles,id'],
-    //     ]);
+        return view('admin.users.edit', compact('user', 'roles', 'userRoleIds'));
+    }
 
-    //     $user->update([
-    //         'name'  => $data['name'],
-    //         'email' => $data['email'],
-    //     ]);
+    public function update(Request $request, User $user)
+    {
+        if ($user->hasRole('admin') && auth()->id() !== $user->id) {
+            return redirect()->route('admin.users.index')->with('error', 'Anda tidak dapat mengedit akun Super Admin lain.');
+        }
 
-    //     $user->syncRoles($data['roles']);
+        $data = $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name'  => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'email', "unique:users,email,{$user->id}"],
+            'roles'      => ['required', 'array', 'min:1'],
+            'roles.*'    => ['exists:roles,name'],
+            'status'     => ['required', 'in:active,pending,rejected'],
+            'password'   => ['nullable', 'min:5'],
+        ]);
 
-    //     return redirect()->route('users.index')
-    //         ->with('success', "User \"{$user->name}\" updated successfully.");
-    // }
+        $fullName = $data['first_name'] . ' ' . $data['last_name'];
 
-    // // ── Delete user ───────────────────────────────────────────────────────────
-    // public function destroy(User $user)
-    // {
-    //     // Prevent self-deletion
-    //     if ($user->id === auth()->id()) {
-    //         return back()->with('error', 'You cannot delete your own account.');
-    //     }
+        $updateData = [
+            'name'   => $fullName,
+            'email'  => $data['email'],
+            'status' => $data['status'],
+        ];
 
-    //     $user->delete();
+        if (!empty($data['password'])) {
+            $updateData['password'] = Hash::make($data['password']);
+        }
 
-    //     return redirect()->route('users.index')
-    //         ->with('success', 'User deleted successfully.');
-    // }
+        $user->update($updateData);
+
+        // Jangan izinkan menghilangkan role admin dari diri sendiri
+        if ($user->id === auth()->id() && !in_array('admin', $data['roles'])) {
+            $data['roles'][] = 'admin'; // paksa admin tetap ada
+        }
+
+        $user->syncRoles($data['roles']);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "Pengguna \"{$user->name}\" berhasil diperbarui.");
+    }
+
+    // ── Delete user ───────────────────────────────────────────────────────────
+    public function destroy(User $user)
+    {
+        // Prevent self-deletion
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        if ($user->hasRole('admin')) {
+            return back()->with('error', 'Akun Super Admin tidak dapat dihapus.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Pengguna berhasil dihapus.');
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete,approve,reject',
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'exists:users,id',
+        ]);
+
+        $action = $request->action;
+        $ids = $request->ids;
+
+        $users = User::whereIn('id', $ids)->get();
+        $count = 0;
+
+        foreach ($users as $user) {
+            if ($action === 'delete') {
+                if ($user->id !== auth()->id() && !$user->hasRole('admin')) {
+                    $user->delete();
+                    $count++;
+                }
+            } elseif ($action === 'approve') {
+                if ($user->status !== 'active') {
+                    $user->update(['status' => 'active']);
+                    $count++;
+                }
+            } elseif ($action === 'reject') {
+                if ($user->id !== auth()->id() && !$user->hasRole('admin') && $user->status !== 'rejected') {
+                    $user->update(['status' => 'rejected']);
+                    $count++;
+                }
+            }
+        }
+
+        $message = "Berhasil memproses $count pengguna.";
+        if ($count < count($ids)) {
+            $message .= " (Beberapa pengguna tidak dapat diproses karena alasan keamanan/status).";
+        }
+
+        return redirect()->back()->with('success', $message);
+    }
 
     public function show(User $user)
     {
