@@ -34,14 +34,18 @@
         <!-- Password -->
         <div>
             <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
-            <div class="relative">
+            <div class="relative" x-data="{ show: false }">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                     <i class="fa-solid fa-lock"></i>
                 </div>
-                <input id="password" class="block w-full pl-11 pr-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
-                                type="password"
+                <input id="password" class="block w-full pl-11 pr-10 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
+                                :type="show ? 'text' : 'password'"
                                 name="password"
                                 required autocomplete="new-password" placeholder="Minimal 8 karakter">
+                <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                    <i class="fa-regular fa-eye" x-show="!show"></i>
+                    <i class="fa-regular fa-eye-slash" x-show="show" x-cloak></i>
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password')" class="mt-1 text-red-500 text-xs" />
         </div>
@@ -49,13 +53,17 @@
         <!-- Confirm Password -->
         <div>
             <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Sandi</label>
-            <div class="relative">
+            <div class="relative" x-data="{ show: false }">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <input id="password_confirmation" class="block w-full pl-11 pr-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
-                                type="password"
+                <input id="password_confirmation" class="block w-full pl-11 pr-10 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
+                                :type="show ? 'text' : 'password'"
                                 name="password_confirmation" required autocomplete="new-password" placeholder="Ulangi sandi">
+                <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                    <i class="fa-regular fa-eye" x-show="!show"></i>
+                    <i class="fa-regular fa-eye-slash" x-show="show" x-cloak></i>
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1 text-red-500 text-xs" />
         </div>

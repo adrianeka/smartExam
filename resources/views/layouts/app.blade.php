@@ -58,6 +58,10 @@
             display: none !important;
         }
 
+        .sidebar-collapsed .admin-actions {
+            display: none !important;
+        }
+
         .sidebar-collapsed .nav-item {
             justify-content: center;
         }

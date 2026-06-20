@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/learning/reports', [App\Http\Controllers\LearningController::class, 'reports'])->name('learning.reports');
 
     // Admin specific routes
-    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['auth', \App\Http\Middleware\CheckMenuAccess::class])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserActivationController::class, 'index'])->name('users.index');
         Route::post('/users/{user}/approve', [UserActivationController::class, 'approve'])->name('users.approve');
         Route::post('/users/{user}/reject', [UserActivationController::class, 'reject'])->name('users.reject');

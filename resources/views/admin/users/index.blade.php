@@ -115,6 +115,7 @@
                     Kelola semua akun pengguna yang terdaftar di dalam platform Smart Exam. Anda dapat melihat status aktivasi, mengubah profil dan hak akses (role), serta melakukan tindakan administratif lainnya secara langsung dari halaman ini.
                 </p>
             </div>
+            @if(auth()->user()->hasRole('admin') || (isset($currentMenuEditPermission) && auth()->user()->hasPermissionTo($currentMenuEditPermission)))
             <a href="{{ route('admin.user.create') }}"
                 class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,6 +123,7 @@
                 </svg>
                 Tambah Pengguna
             </a>
+            @endif
         </div>
         <p class="text-sm font-semibold text-gray-700 mb-3">Telusuri</p>
         <!-- Main Search -->
@@ -380,6 +382,7 @@
                             <td class="px-4 py-3 text-sm text-gray-600">{{ $user->updated_at?->format('d M Y, H:i') ?? '-' }}</td>
                             <td class="px-4 py-3">
                                 @if($user->status === 'pending')
+                                    @if(auth()->user()->hasRole('admin') || (isset($currentMenuEditPermission) && auth()->user()->hasPermissionTo($currentMenuEditPermission)))
                                     <div class="flex items-center gap-2">
                                         <button type="button" onclick="document.getElementById('approve-form-{{ $user->id }}').submit();" class="p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition" title="Setujui Akun">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -389,6 +392,9 @@
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                     </div>
+                                    @else
+                                    <span class="text-xs text-gray-400 italic">No Action</span>
+                                    @endif
                                 @else
                                     <button class="action-btn p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" data-user-id="{{ $user->id }}" title="Aksi lainnya">
                                         <svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24">
@@ -449,6 +455,7 @@
                 </svg>
                 Lihat Detail
             </a>
+            @if(auth()->user()->hasRole('admin') || (isset($currentMenuEditPermission) && auth()->user()->hasPermissionTo($currentMenuEditPermission)))
             <a id="dropdownEditLink" href="#"
                 class="flex items-center gap-3 w-full px-3 py-2.5 hover:bg-blue-50 rounded-xl text-gray-800 hover:text-blue-700 transition-colors text-sm">
                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -471,6 +478,7 @@
                     </button>
                 </form>
             </div>
+            @endif
         </div>
     </div>
 

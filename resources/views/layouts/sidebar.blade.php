@@ -26,16 +26,23 @@
         @endphp
 
         @foreach($dynamicMenus as $menu)
-            {{-- Check Permission (Admin selalu bisa lihat, atau user yang punya permission) --}}
-            @if(!$menu->permission_name || auth()->user()->hasPermissionTo($menu->permission_name) || auth()->user()->hasRole('admin'))
-                
-                @if($menu->type === 'category')
+            @if($menu->type === 'category')
+                @php
+                    $hasVisibleChildren = false;
+                    foreach($menu->children as $childItem) {
+                        if(!$childItem->permission_name || auth()->user()->hasPermissionTo($childItem->permission_name) || auth()->user()->hasRole('admin')) {
+                            $hasVisibleChildren = true;
+                            break;
+                        }
+                    }
+                @endphp
+                @if($hasVisibleChildren || auth()->user()->hasRole('admin'))
                     {{-- Render Category (Judul) --}}
                     <div class="my-3 border-t border-gray-100"></div>
                     <div class="group flex items-center justify-between px-2 mb-2 relative">
                         <p class="section-label text-[10px] font-bold text-gray-400 uppercase tracking-widest transition-all duration-200">{{ $menu->name }}</p>
                         @role('admin')
-                        <div class="absolute right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white px-1.5 py-0.5 rounded shadow border border-gray-100 z-10">
+                        <div class="admin-actions absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white px-1.5 py-0.5 rounded shadow-sm border border-gray-100 z-10">
                             {{-- Settings (Discord Style) --}}
                             <a href="{{ route('admin.menus.settings', $menu->id) }}" class="text-gray-400 hover:text-gray-700 p-1" title="Pengaturan Kategori">
                                 <i class="fa-solid fa-gear text-[10px]"></i>
@@ -54,12 +61,13 @@
                             @include('layouts.sidebar-item', ['item' => $childItem])
                         @endif
                     @endforeach
-
-                @else
+                @endif
+            @else
+                {{-- Check Permission (Admin selalu bisa lihat, atau user yang punya permission) --}}
+                @if(!$menu->permission_name || auth()->user()->hasPermissionTo($menu->permission_name) || auth()->user()->hasRole('admin'))
                     {{-- Render Menu Items at Top Level (No Category) --}}
                     @include('layouts.sidebar-item', ['item' => $menu])
                 @endif
-                
             @endif
         @endforeach
 
@@ -71,7 +79,6 @@
                 <span class="label-text text-xs font-medium">Tambah Menu Baru</span>
             </span>
         </a>
-        @endrole
         
         @php $otherItems = [
             ['icon' => 'fa-solid fa-screwdriver-wrench', 'label' => 'Sistem', 'route' => 'dashboard'],
@@ -88,5 +95,6 @@
             <i class="chevron-icon fa-solid fa-chevron-down text-[10px] text-gray-300 shrink-0"></i>
         </a>
         @endforeach
+        @endrole
     </div>
 </aside>
