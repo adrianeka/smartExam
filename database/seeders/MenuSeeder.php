@@ -213,8 +213,15 @@ class MenuSeeder extends Seeder
             ],
         ];
 
-        foreach ($menus as $menu) {
-            Menu::create($menu);
+        foreach ($menus as $menuData) {
+            $menu = Menu::create($menuData);
+            
+            // Auto create Spatie Permissions for the menu if not category
+            if ($menu->type !== 'category') {
+                $viewPerm = 'view_menu_' . $menu->id;
+                \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $viewPerm]);
+                \Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'edit_menu_' . $menu->id]);
+            }
         }
     }
 }
