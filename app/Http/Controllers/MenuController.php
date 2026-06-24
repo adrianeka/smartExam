@@ -89,9 +89,9 @@ class MenuController extends Controller
             }
         }
 
-        // If it's a dynamic page, update URL to its actual channel page
+        // If it's a dynamic page, update URL to its actual channel page using relative path
         if ($menu->type !== 'link' && $menu->type !== 'category') {
-            $menu->update(['url' => route('dynamic-page.show', $menu->id)]);
+            $menu->update(['url' => route('dynamic-page.show', $menu->id, false)]);
         }
 
         return redirect()->route('admin.menus.index')->with('success', 'Menu created successfully.');

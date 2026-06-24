@@ -3,6 +3,7 @@ require __DIR__ . '/vendor/autoload.php';
 $app = require_once __DIR__ . '/bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
-foreach (App\Models\Menu::all() as $m) {
-    echo $m->id . " - " . $m->name . " - TYPE: " . $m->type . " - PARENT: " . $m->parent_id . "\n";
-}
+App\Models\Menu::whereNotIn('type', ['link', 'category'])->get()->each(function($menu) { 
+    $menu->update(['url' => route('dynamic-page.show', $menu->id, false)]);
+    echo "Updated Menu " . $menu->id . " URL to " . $menu->url . "\n";
+});
