@@ -1,0 +1,3 @@
+[submodule "modules/exam-mcq"]
+	path = modules/exam-mcq
+	url = https://github.com/RainerAthar/smart-exam-mcq.git
